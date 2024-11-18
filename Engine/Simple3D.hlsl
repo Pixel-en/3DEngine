@@ -15,6 +15,7 @@ cbuffer global
     float4x4 matW; //法線をワールド座標に対応させる行列＝回転＊スケールの逆行列（平行移動は無視）
     
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
+    float2 factor;
     bool isTexture; // テクスチャ貼ってあるかどうか
 };
 
@@ -25,7 +26,7 @@ struct VS_OUT
 {
     float4 pos : SV_POSITION; //位置
     float2 uv : TEXCOORD; //UV座標
-    float4 cos_alpha : COLOR; //色（明るさ）
+    float4 color : COLOR; //色（明るさ）
 };
 
 //───────────────────────────────────────
@@ -41,7 +42,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.pos = mul(pos, matWVP);
     outData.uv = uv;
     
-    float4 light = float4(1, 1, -1, 0); //光源ベクトルの逆ベクトル
+    float4 light = float4(0, 1, -1, 0); //光源ベクトルの逆ベクトル
     light = normalize(light); //単位ベクトル化
     
     normal = mul(normal, matW);
@@ -49,7 +50,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     normal.w = 0;
     light.w = 0;
     
-    outData.cos_alpha = clamp(dot(normal, light), 0, 1);
+    outData.color = clamp(dot(normal, light), 0, 1);
 	//まとめて出力
     return outData;
 }
@@ -59,18 +60,32 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-    float4 Id = { 1.0, 1.0, 1.0, 0.0 }; //光の強さ
-    float4 Kd = g_texture.Sample(g_sampler, inData.uv); //テクスチャの色のサンプリング
-    float cos_alpha = inData.cos_alpha; //拡散反射係数
-    float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
+    //float4 Id = { 1.0, 1.0, 1.0, 0.0 }; //光の強さ
+    //float4 Kd = g_texture.Sample(g_sampler, inData.uv); //テクスチャの色のサンプリング
+    //float cos_alpha = inData.cos_alpha; //拡散反射係数
+    //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
+    
+    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+    float4 ambientSource = float4(0.2, 0.2, 0.2, 0.2);
+    float4 diffuse;
+    float ambient;
     
     if (isTexture == false)
     {
-        return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
+        //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
+        diffuse = diffuseColor * inData.color * factor.x;
+        ambient = diffuseColor * ambientSource * factor.x;
 
     }
-    else    
-        return Id * Kd * cos_alpha + Id * Kd * ambentSource;
+    else
+    {
+        diffuse = g_texture.Sample(g_sampler, inData.uv) * inData.color * factor.x;
+        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
+
+    }
+        //return Id * Kd * cos_alpha + Id * Kd * ambentSource;
+    
+    return diffuse + ambient;
     
     //return g_texture.Sample(g_sampler, inData.uv);
 }

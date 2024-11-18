@@ -21,6 +21,7 @@ class FBX
 	{
 		Texture* pTexture;
 		XMFLOAT4 diffuse;
+		XMFLOAT2 factor;
 	};
 
 
@@ -29,7 +30,8 @@ class FBX
 		XMMATRIX	matWVP;		//ワールドビュー
 		XMMATRIX	matNormal;	//法線ベクトル
 		XMFLOAT4	diffuseColor;
-		int		isTextured;	//テクスチャが貼ってあるかどうか
+		XMFLOAT2	diffuseFactor;
+		int			isTextured;	//テクスチャが貼ってあるかどうか
 	};
 
 	//頂点情報
