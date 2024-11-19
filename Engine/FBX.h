@@ -30,6 +30,7 @@ class FBX
 		XMMATRIX	matWVP;		//ワールドビュー
 		XMMATRIX	matNormal;	//法線ベクトル
 		XMFLOAT4	diffuseColor;
+		XMFLOAT4	globalLightvec;
 		XMFLOAT2	diffuseFactor;
 		int			isTextured;	//テクスチャが貼ってあるかどうか
 	};

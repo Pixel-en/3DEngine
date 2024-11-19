@@ -15,7 +15,8 @@ cbuffer global
     float4x4 matW; //法線をワールド座標に対応させる行列＝回転＊スケールの逆行列（平行移動は無視）
     
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
-    float2 factor;
+    float4 lightVec; //平行光源のベクトル
+    float2 factor;      //ディフューズの反射の強さ
     bool isTexture; // テクスチャ貼ってあるかどうか
 };
 
@@ -42,13 +43,11 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.pos = mul(pos, matWVP);
     outData.uv = uv;
     
-    float4 light = float4(0, 1, -1, 0); //光源ベクトルの逆ベクトル
-    light = normalize(light); //単位ベクトル化
-    
     normal = mul(normal, matW);
     normal = normalize(normal);
-    normal.w = 0;
-    light.w = 0;
+    
+    float4 light = lightVec;
+    light = normalize(light);
     
     outData.color = clamp(dot(normal, light), 0, 1);
 	//まとめて出力
@@ -65,7 +64,7 @@ float4 PS(VS_OUT inData) : SV_Target
     //float cos_alpha = inData.cos_alpha; //拡散反射係数
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
-    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+    //float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
     float4 ambientSource = float4(0.2, 0.2, 0.2, 0.2);
     float4 diffuse;
     float ambient;

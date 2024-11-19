@@ -252,6 +252,7 @@ void FBX::Draw(Transform& transform)
 			cb.isTextured = false;
 		else
 			cb.isTextured = true;
+		cb.globalLightvec = Direct3D::GetGlovalLightVec();
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

@@ -47,4 +47,7 @@ namespace Direct3D
 
 	//‰ð•ú
 	void Release();
+
+	void SetGlobalLightVec(DirectX::XMFLOAT4 lv);
+	DirectX::XMFLOAT4 GetGlovalLightVec();
 };
