@@ -188,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\CRTRender.hlsl" />
+    <FxCompile Include="Engine\PointLightShader.hlsl" />
     <FxCompile Include="Engine\Simple2D.hlsl" />
     <FxCompile Include="Engine\Simple3D.hlsl" />
   </ItemGroup>

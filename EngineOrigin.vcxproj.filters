@@ -129,6 +129,9 @@
     <FxCompile Include="Engine\Simple3D.hlsl">
       <Filter>ソース ファイル\Engine\Sheder</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\PointLightShader.hlsl">
+      <Filter>ソース ファイル\Engine\Sheder</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
