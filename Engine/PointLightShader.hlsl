@@ -5,7 +5,7 @@ Texture2D g_texture : register(t0); //テクスチャー
 SamplerState g_sampler : register(s0); //サンプラー
 
 //───────────────────────────────────────
- // コンスタントバッファ
+// コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
 //───────────────────────────────────────
 cbuffer global
@@ -15,7 +15,7 @@ cbuffer global
     float4x4 matW; //法線をワールド座標に対応させる行列＝回転＊スケールの逆行列（平行移動は無視）
     
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
-    float4 lightVec; //平行光源のベクトル
+    float4 lightVec; //平行光源のベクトル    lightPosition
     float2 factor; //ディフューズの反射の強さ
     bool isTexture; // テクスチャ貼ってあるかどうか
 };
@@ -44,14 +44,18 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.uv = uv;
     
     normal = mul(normal, matW);
+    normal.w = 0;
     normal = normalize(normal);
     
-    float4 light = lightVec;
-    light = normalize(light);
+    
+    float4 lightvec = lightVec - outData.pos;
+    float4 light = normalize(lightvec);
     
     outData.color = clamp(dot(normal, light), 0, 1);
+    
 	//まとめて出力
     return outData;
+    
 }
 
 //───────────────────────────────────────
@@ -64,7 +68,7 @@ float4 PS(VS_OUT inData) : SV_Target
     //float cos_alpha = inData.cos_alpha; //拡散反射係数
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
-    //float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
     float4 ambientSource = float4(0.2, 0.2, 0.2, 0.2);
     float4 diffuse;
     float ambient;
@@ -82,7 +86,6 @@ float4 PS(VS_OUT inData) : SV_Target
         ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
 
     }
-        //return Id * Kd * cos_alpha + Id * Kd * ambentSource;
     
     return diffuse + ambient;
     

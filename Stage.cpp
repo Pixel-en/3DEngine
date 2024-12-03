@@ -8,7 +8,10 @@ Stage::Stage(GameObject* parent)
 	trans[0] = transform_;
 	trans[1] = transform_;
 	trans[2] = transform_;
+	trans[3] = transform_;
+	trans[3].position_.y -= 1;
 	lightpos = Direct3D::GetGlovalLightVec();
+	hFloor_ = 0;
 }
 
 Stage::~Stage()
@@ -20,7 +23,7 @@ void Stage::Initialize()
 	hModel_[0] = Model::Load("Assets\\Sphere_0.3.fbx");
 	hModel_[1] = Model::Load("Assets\\Sphere.fbx");
 	hModel_[2] = Model::Load("Assets\\Sphere_1.0.fbx");
-	//assert(hModel_ < 0);
+	hFloor_ =	 Model::Load("Assets\\floor.fbx");
 	trans[0].position_.x -= 3;
 	trans[2].position_.x += 3;
 
@@ -49,6 +52,9 @@ void Stage::Draw()
 		Model::SetTransform(hModel_[i], trans[i]);
 		Model::Draw(hModel_[i]);
 	}
+
+	Model::SetTransform(hFloor_, trans[3]);
+	Model::Draw(hFloor_);
 }
 
 void Stage::Release()
