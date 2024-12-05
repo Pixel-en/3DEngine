@@ -71,7 +71,7 @@ float4 PS(VS_OUT inData) : SV_Target
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
     float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-    float4 ambientSource = float4(0.2, 0.2, 0.2, 0.2);
+    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
     float4 diffuse;
     float4 ambient;
     float4 dir = normalize(lightVec - inData.wpos); //ピクセル一のポリゴンの３次元座標変換 = wpos
@@ -79,18 +79,18 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 color = clamp(dot(normalize(inData.normal), -dir), 0, 1);
     float len = length(lightVec - inData.wpos);
     float3 k = { 1.0f, 1.0f, 0.5f };
-    float dTerm = saturate(1.0f / (k.x + k.y * len + k.z * len * len));
+    float dTerm = 1.0f / (k.x + k.y * len + k.z * len * len);
     
     if (isTexture == false)
     {
         //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
-        diffuse = diffuseColor * color * factor.x;
+        diffuse = diffuseColor * color * factor.x * dTerm;
         ambient = diffuseColor * ambientSource * factor.x;
 
     }
     else
     {
-        diffuse = g_texture.Sample(g_sampler, inData.uv) * color * dTerm;
+        diffuse = g_texture.Sample(g_sampler, inData.uv) * color * dTerm * factor.x;
         ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource;
 
     }

@@ -45,9 +45,9 @@ void Stage::Update()
 	if (Input::IsKey(DIK_DOWN))
 		lightpos.position_.z -= 0.1f;
 	if(Input::IsKey(DIK_W))
-		lightpos.position_.y -= 0.1f;
-	if (Input::IsKey(DIK_S))
 		lightpos.position_.y += 0.1f;
+	if (Input::IsKey(DIK_S))
+		lightpos.position_.y -= 0.1f;
 	XMFLOAT4 temp = { lightpos.position_.x,lightpos.position_.y,lightpos.position_.z,Direct3D::GetGlovalLightVec().w };
 	Direct3D::SetGlobalLightVec(temp);
 }
