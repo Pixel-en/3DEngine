@@ -243,8 +243,10 @@ void FBX::Draw(Transform& transform)
 
 	// インデックスバッファーをセット
 	for (int i = 0; i < materialCount_; i++) {
+		//コンスタントバッファ
 		CONSTANT_BUFFER cb;
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		cb.diffuseFactor = pMaterialList_[i].factor;

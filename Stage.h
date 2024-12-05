@@ -4,8 +4,9 @@
 class Stage:public GameObject
 {
 	int hModel_[3];
+	int hlightmodel;
 	Transform trans[4];
-	XMFLOAT4 lightpos;
+	Transform lightpos;
 	int hFloor_;
 
 public:

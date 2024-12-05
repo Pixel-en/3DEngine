@@ -10,7 +10,7 @@ Stage::Stage(GameObject* parent)
 	trans[2] = transform_;
 	trans[3] = transform_;
 	trans[3].position_.y -= 1;
-	lightpos = Direct3D::GetGlovalLightVec();
+	lightpos.position_ = { Direct3D::GetGlovalLightVec().x,Direct3D::GetGlovalLightVec().y,Direct3D::GetGlovalLightVec().z };
 	hFloor_ = 0;
 }
 
@@ -23,6 +23,7 @@ void Stage::Initialize()
 	hModel_[0] = Model::Load("Assets\\Sphere_0.3.fbx");
 	hModel_[1] = Model::Load("Assets\\Sphere.fbx");
 	hModel_[2] = Model::Load("Assets\\Sphere_1.0.fbx");
+	hlightmodel = Model::Load("Assets\\Sphere.fbx");
 	hFloor_ =	 Model::Load("Assets\\floor.fbx");
 	trans[0].position_.x -= 3;
 	trans[2].position_.x += 3;
@@ -36,14 +37,19 @@ void Stage::Update()
 		trans[i].rotate_.y = transform_.rotate_.y;
 	}
 	if (Input::IsKey(DIK_LEFT))
-		lightpos.x -= 0.1f;
+		lightpos.position_.x -= 0.1f;
 	if (Input::IsKey(DIK_RIGHT))
-		lightpos.x += 0.1f;
+		lightpos.position_.x += 0.1f;
 	if (Input::IsKey(DIK_UP))
-		lightpos.z += 0.1f;
+		lightpos.position_.z += 0.1f;
 	if (Input::IsKey(DIK_DOWN))
-		lightpos.z -= 0.1f;
-	Direct3D::SetGlobalLightVec(lightpos);
+		lightpos.position_.z -= 0.1f;
+	if(Input::IsKey(DIK_W))
+		lightpos.position_.y -= 0.1f;
+	if (Input::IsKey(DIK_S))
+		lightpos.position_.y += 0.1f;
+	XMFLOAT4 temp = { lightpos.position_.x,lightpos.position_.y,lightpos.position_.z,Direct3D::GetGlovalLightVec().w };
+	Direct3D::SetGlobalLightVec(temp);
 }
 
 void Stage::Draw()
@@ -55,6 +61,8 @@ void Stage::Draw()
 
 	Model::SetTransform(hFloor_, trans[3]);
 	Model::Draw(hFloor_);
+	Model::SetTransform(hlightmodel, lightpos);
+	Model::Draw(hlightmodel);
 }
 
 void Stage::Release()

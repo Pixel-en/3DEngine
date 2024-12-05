@@ -123,7 +123,9 @@
       <EntryPointName>VS</EntryPointName>
     </FxCompile>
     <FxCompile>
-      <ShaderModel>5.0</ShaderModel>
+      <ShaderModel>5.1</ShaderModel>
+      <ShaderType>
+      </ShaderType>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,7 +148,7 @@
       <EntryPointName>VS</EntryPointName>
     </FxCompile>
     <FxCompile>
-      <ShaderModel>5.0</ShaderModel>
+      <ShaderModel>5.1</ShaderModel>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -188,7 +190,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\CRTRender.hlsl" />
-    <FxCompile Include="Engine\PointLightShader.hlsl" />
+    <FxCompile Include="Engine\PointLightShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Engine\Simple2D.hlsl" />
     <FxCompile Include="Engine\Simple3D.hlsl" />
   </ItemGroup>
