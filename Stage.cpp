@@ -2,12 +2,28 @@
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 
+void Stage::InitConstantBuffer()
+{	
+	//Quadと一緒
+	D3D11_BUFFER_DESC cb;
+	cb.ByteWidth = sizeof(CONSTBUFFER_STAGE);
+	cb.Usage = D3D11_USAGE_DYNAMIC;
+	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cb.MiscFlags = 0;
+	cb.StructureByteStride = 0;
+
+	HRESULT hr;
+	hr = Direct3D::pDevice->CreateBuffer(&cb, nullptr, &pConstantBuffer_);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, L"コンスタントバッファの作成に失敗しました", L"エラー", MB_OK);
+	}
+}
+
 Stage::Stage(GameObject* parent)
-	:GameObject(parent,"Stage")
+	:GameObject(parent,"Stage"),pConstantBuffer_(nullptr)
 {
-	trans[0] = transform_;
-	trans[1] = transform_;
-	trans[2] = transform_;
 	trans[3] = transform_;
 	trans[3].position_.y -= 1;
 	lightpos.position_ = { Direct3D::GetGlovalLightVec().x,Direct3D::GetGlovalLightVec().y,Direct3D::GetGlovalLightVec().z };
@@ -20,22 +36,16 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	hModel_[0] = Model::Load("Assets\\Sphere_0.3.fbx");
-	hModel_[1] = Model::Load("Assets\\Sphere.fbx");
-	hModel_[2] = Model::Load("Assets\\Sphere_1.0.fbx");
 	hlightmodel = Model::Load("Assets\\Sphere.fbx");
-	hFloor_ =	 Model::Load("Assets\\floor.fbx");
-	trans[0].position_.x -= 3;
-	trans[2].position_.x += 3;
+	hFloor_ = Model::Load("Assets\\Torus.fbx");
 
+	this->InitConstantBuffer();
 }
 
 void Stage::Update()
 {
 	transform_.rotate_.y += 0.5f;
-	for (int i = 0; i < 3; i++) {
-		trans[i].rotate_.y = transform_.rotate_.y;
-	}
+
 	if (Input::IsKey(DIK_LEFT))
 		lightpos.position_.x -= 0.1f;
 	if (Input::IsKey(DIK_RIGHT))
@@ -50,14 +60,12 @@ void Stage::Update()
 		lightpos.position_.y -= 0.1f;
 	XMFLOAT4 temp = { lightpos.position_.x,lightpos.position_.y,lightpos.position_.z,Direct3D::GetGlovalLightVec().w };
 	Direct3D::SetGlobalLightVec(temp);
+
+	//コンスタントバッファの設定と、シェーダーへのコンスタントバッファのセットを書く
 }
 
 void Stage::Draw()
 {
-	for (int i = 0; i < 3; i++) {
-		Model::SetTransform(hModel_[i], trans[i]);
-		Model::Draw(hModel_[i]);
-	}
 
 	Model::SetTransform(hFloor_, trans[3]);
 	Model::Draw(hFloor_);

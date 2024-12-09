@@ -160,7 +160,7 @@ void FBX::InitConstantBuffer()
 {
 	//Quadと一緒
 	D3D11_BUFFER_DESC cb;
-	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
+	cb.ByteWidth = sizeof(CONSTBUFFER_MODEL);
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -244,18 +244,18 @@ void FBX::Draw(Transform& transform)
 	// インデックスバッファーをセット
 	for (int i = 0; i < materialCount_; i++) {
 		//コンスタントバッファ
-		CONSTANT_BUFFER cb;
+		CONSTBUFFER_MODEL cb;
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		//cb.globalLightvec = Direct3D::GetGlovalLightVec();
 		cb.diffuseFactor = pMaterialList_[i].factor;
 		if (pMaterialList_[i].pTexture == nullptr)
 			cb.isTextured = false;
 		else
 			cb.isTextured = true;
-		cb.globalLightvec = Direct3D::GetGlovalLightVec();
-
+		
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
 		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
