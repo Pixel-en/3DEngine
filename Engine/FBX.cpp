@@ -203,13 +203,15 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 
 
 
-				FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
+				FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 				FbxDouble diffuse = pMaterial->DiffuseFactor;
+				FbxDouble3 ambient = pMaterial->Ambient;
 				pMaterialList_[i].factor = XMFLOAT2((float)diffuse, (float)diffuse);
-			}
-			else
-			{
-				//ƒGƒ‰[
+				if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId)) {
+					FbxDouble3 specular = pMaterial->Specular;
+					FbxDouble3 shininess = pMaterial->Shininess;
+				}
+				//‚±‚±‚Å©•ª‚ÌpMaterialList[i]‚É’l‚ğİ’è
 			}
 
 		}

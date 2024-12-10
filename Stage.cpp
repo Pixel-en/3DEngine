@@ -1,6 +1,8 @@
 #include "Stage.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
+#include "Engine/Camera.h"
+
 
 void Stage::InitConstantBuffer()
 {	
@@ -62,6 +64,19 @@ void Stage::Update()
 	Direct3D::SetGlobalLightVec(temp);
 
 	//コンスタントバッファの設定と、シェーダーへのコンスタントバッファのセットを書く
+	CONSTBUFFER_STAGE cb;
+	cb.lightPosition = Direct3D::GetGlovalLightVec();
+	XMStoreFloat4(&cb.eyePosition, Camera::GetPosition());
+
+	D3D11_MAPPED_SUBRESOURCE pdata;
+	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+
+	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
+
+	Direct3D::pContext->VSSetConstantBuffers(1, 1, &pConstantBuffer_);	//頂点シェーダー用	
+	Direct3D::pContext->PSSetConstantBuffers(1, 1, &pConstantBuffer_);	//ピクセルシェーダー用
+
 }
 
 void Stage::Draw()

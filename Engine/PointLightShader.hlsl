@@ -8,16 +8,22 @@ SamplerState g_sampler : register(s0); //サンプラー
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
 //───────────────────────────────────────
-cbuffer global
+cbuffer gModel : register(b0)
 {
     //変換行列、視点、光源
     float4x4 matWVP; // ワールド・ビュー・プロジェクションの合成行列
     float4x4 matW; //法線をワールド座標に対応させる行列＝回転＊スケールの逆行列（平行移動は無視）
-    float4x4 matNormal;  //ワールド行列
+    float4x4 matNormal; //ワールド行列
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
-    float4 lightVec; //平行光源のベクトル    lightPosition
+    //float4 lightPosition; //平行光源のベクトル
     float2 factor; //ディフューズの反射の強さ
     bool isTexture; // テクスチャ貼ってあるかどうか
+};
+
+cbuffer gStage : register(b1)
+{
+    float4 lightPosition;
+    float4 eyePosition;
 };
 
 //───────────────────────────────────────
@@ -71,10 +77,10 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
     float4 diffuse;
     float4 ambient;
-    float3 dir = normalize(lightVec.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
+    float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
     inData.normal.z = 0;
     float4 color = clamp(dot(normalize(inData.normal.xyz), -dir), 0, 1);
-    float len = length(lightVec.xyz - inData.wpos.xyz);
+    float len = length(lightPosition.xyz - inData.wpos.xyz);
     float3 k = { 0.2f, 0.2f, 1.0f };
     float dTerm = 1.0f / (k.x + k.y * len + k.z * len * len);
     
