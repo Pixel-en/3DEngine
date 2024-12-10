@@ -220,12 +220,18 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].pTexture = nullptr;
 
 			//マテリアルの色　Lambert:拡散反射とアンビエントのみ使えるシェーディングモデル
-			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
+			FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 			FbxDouble3  diffuse = pMaterial->Diffuse;
 			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 
 			FbxDouble factor = pMaterial->DiffuseFactor;
+			FbxDouble3 ambient = pMaterial->Ambient;
 			pMaterialList_[i].factor = XMFLOAT2((float)factor, (float)factor);
+			pMaterialList_[i].ambient = { (float)ambient[0],(float)ambient[1] ,(float)ambient[2],1.0f };
+			if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId)) {
+				FbxDouble3 specular = pMaterial->Specular;
+				FbxDouble shininess = pMaterial->Shininess;
+			}
 		}
 
 
