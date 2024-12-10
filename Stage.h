@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include <DirectXMath.h>
 
 struct CONSTBUFFER_STAGE {
 	XMFLOAT4 lightPosition;	//ŒõŒ¹ˆÊ’u

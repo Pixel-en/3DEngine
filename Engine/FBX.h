@@ -2,7 +2,6 @@
 #include <DirectXMath.h>
 #include <fbxsdk.h>
 #include "Direct3D.h"
-#include <DirectXMath.h>
 #include "Texture.h"
 #include <vector>
 #include "Transform.h"
@@ -21,6 +20,9 @@ class FBX
 	{
 		Texture* pTexture;
 		XMFLOAT4 diffuse;
+		XMFLOAT4 specular;	//‹¾–Ê”½ËŒW”
+		XMFLOAT4 shininess;	//‹¾–Ê”½Ë‚ÌParameter
+		XMFLOAT4 ambient;	//ŠÂ‹«Z‚Ì”½ËŒW”)
 		XMFLOAT2 factor;
 	};
 
