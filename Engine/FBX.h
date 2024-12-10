@@ -25,13 +25,13 @@ class FBX
 	};
 
 
-	struct CONSTANT_BUFFER
+	struct CONSTBUFFER_MODEL
 	{
 		XMMATRIX	matWVP;		//スクリーン変換マトリクス
 		XMMATRIX    matW;		//ワールド変換マトリクス
 		XMMATRIX	matNormal;	//法線のワールド変換用マトリクス
 		XMFLOAT4	diffuseColor;	//RGBの拡散反射係数(色)
-		XMFLOAT4	globalLightvec;	//光源位置
+		//XMFLOAT4	globalLightvec;	//光源位置
 		XMFLOAT2	diffuseFactor;	//拡散光の反射係数
 		int			isTextured;	//テクスチャが貼ってあるかどうか
 	};
