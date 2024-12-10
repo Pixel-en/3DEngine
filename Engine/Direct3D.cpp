@@ -25,7 +25,7 @@ namespace Direct3D
         ID3D11InputLayout* pVertexLayout_ = nullptr;  //頂点インプットレイアウト
         ID3D11RasterizerState* pRasterizerState_ = nullptr;  //ラスタライザー
     };
-    DirectX::XMFLOAT4 G_LightVec = { 0,2,-2,0 };  //全体の光源ベクトル
+    DirectX::XMFLOAT4 G_LightVec = { 0,0.5,0,0 };  //全体の光源ベクトル
 
     const int WINDOW_WIDTH = 800;
     const int WINDOW_HEIGHT = 600;

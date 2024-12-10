@@ -23,7 +23,7 @@ void Stage::Initialize()
 	hModel_[0] = Model::Load("Assets\\Sphere_0.3.fbx");
 	hModel_[1] = Model::Load("Assets\\Sphere.fbx");
 	hModel_[2] = Model::Load("Assets\\Sphere_1.0.fbx");
-	hlightmodel = Model::Load("Assets\\Sphere.fbx");
+	hlightmodel = Model::Load("Assets\\Sphere_1.0.fbx");
 	hFloor_ =	 Model::Load("Assets\\floor.fbx");
 	trans[0].position_.x -= 3;
 	trans[2].position_.x += 3;

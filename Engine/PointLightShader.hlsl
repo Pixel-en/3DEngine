@@ -78,7 +78,7 @@ float4 PS(VS_OUT inData) : SV_Target
     inData.normal.z = 0;
     float4 color = clamp(dot(normalize(inData.normal), -dir), 0, 1);
     float len = length(lightVec - inData.wpos);
-    float3 k = { 1.0f, 1.0f, 0.5f };
+    float3 k = { 1.0f, 1.0f, 1.0f };
     float dTerm = 1.0f / (k.x + k.y * len + k.z * len * len);
     
     if (isTexture == false)
