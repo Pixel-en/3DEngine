@@ -16,6 +16,9 @@ cbuffer gModel : register(b0)
     float4x4 matNormal; //ワールド行列
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
     //float4 lightPosition; //平行光源のベクトル
+    float4 ambientColor;
+    float4 specularColor;
+    float4 shininess;
     float2 factor; //ディフューズの反射の強さ
     bool isTexture; // テクスチャ貼ってあるかどうか
 };
@@ -31,10 +34,11 @@ cbuffer gStage : register(b1)
 //───────────────────────────────────────
 struct VS_OUT
 {
+    float4 wpos : POSITION0;
     float4 pos : SV_POSITION; //位置
-    float4 wpos : POSITION;
     float2 uv : TEXCOORD; //UV座標
     float4 normal : NORMAL;
+    float4 eyev : POSITION1;
     //float4 color : COLOR; //色（明るさ）
 };
 
@@ -56,6 +60,9 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.wpos = wpos;
     outData.uv = uv.xy;
     outData.normal = wnormal;
+    outData.eyev = normalize(eyePosition - wpos);
+    float4 lv = normalize(reflect(outData.eyev, outData.normal));
+    float4 h = normalize(outData.eyev + lv);
    // float4 dir = normalize(lightVec - wpos);
     //outData.color = clamp(dot(normalize(wnormal), dir), 0, 1);
     

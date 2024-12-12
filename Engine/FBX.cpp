@@ -209,8 +209,11 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 				if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId)) {
 					FbxDouble3 specular = pMaterial->Specular;
 					FbxDouble shininess = pMaterial->Shininess;
+
+					//Ç±Ç±Ç≈é©ï™ÇÃpMaterialList[i]Ç…ílÇê›íË
+					pMaterialList_[i].specular = { (float)specular[0],(float)specular[1],(float)specular[2],1.0f };
+					pMaterialList_[i].shininess = { (float)shininess,(float)shininess ,(float)shininess ,1.0f };
 				}
-				//Ç±Ç±Ç≈é©ï™ÇÃpMaterialList[i]Ç…ílÇê›íË
 			}
 
 		}
@@ -231,6 +234,10 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 			if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId)) {
 				FbxDouble3 specular = pMaterial->Specular;
 				FbxDouble shininess = pMaterial->Shininess;
+
+				//Ç±Ç±Ç≈é©ï™ÇÃpMaterialList[i]Ç…ílÇê›íË
+				pMaterialList_[i].specular = { 0.0f,0.0f,0.0f,1.0f };
+				pMaterialList_[i].shininess = { 10.0f,10.0f,10.0f,1.0f };
 			}
 		}
 
@@ -257,6 +264,9 @@ void FBX::Draw(Transform& transform)
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		//cb.globalLightvec = Direct3D::GetGlovalLightVec();
+		cb.ambientColor = pMaterialList_[i].ambient;
+		cb.specularColor = pMaterialList_[i].specular;
+		cb.shininess = pMaterialList_[i].shininess;
 		cb.diffuseFactor = pMaterialList_[i].factor;
 		if (pMaterialList_[i].pTexture == nullptr)
 			cb.isTextured = false;

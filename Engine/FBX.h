@@ -35,6 +35,9 @@ class FBX
 		XMFLOAT4	diffuseColor;	//RGBの拡散反射係数(色)
 		//XMFLOAT4	globalLightvec;	//光源位置
 		XMFLOAT2	diffuseFactor;	//拡散光の反射係数
+		XMFLOAT4	ambientColor;
+		XMFLOAT4    specularColor;
+		XMFLOAT4	shininess;
 		int			isTextured;	//テクスチャが貼ってあるかどうか
 	};
 
