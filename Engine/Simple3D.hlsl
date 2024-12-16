@@ -13,9 +13,12 @@ cbuffer global
     //変換行列、視点、光源
     float4x4 matWVP; // ワールド・ビュー・プロジェクションの合成行列
     float4x4 matW; //法線をワールド座標に対応させる行列＝回転＊スケールの逆行列（平行移動は無視）
-    
+    float4x4 matNormal; //ワールド行列
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
     float4 lightVec; //平行光源のベクトル
+    float4 ambientColor;
+    float4 specularColor;
+    float4 shininess;
     float2 factor;      //ディフューズの反射の強さ
     bool isTexture; // テクスチャ貼ってあるかどうか
 };
@@ -28,6 +31,7 @@ struct VS_OUT
     float4 pos : SV_POSITION; //位置
     float2 uv : TEXCOORD; //UV座標
     float4 color : COLOR; //色（明るさ）
+    float4 normal : NORMAL;
 };
 
 //───────────────────────────────────────
