@@ -65,6 +65,8 @@ class FBX
 
 	std::vector<int> indexcount;
 
+	bool shederchenge;
+
 public:
 
 	FBX();

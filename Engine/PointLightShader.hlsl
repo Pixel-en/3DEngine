@@ -60,9 +60,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.wpos = wpos;
     outData.uv = uv.xy;
     outData.normal = wnormal;
-    outData.eyev = normalize(eyePosition - wpos);
-    float4 lv = normalize(reflect(outData.eyev, outData.normal));
-    float4 h = normalize(outData.eyev + lv);
+    outData.eyev = eyePosition - wpos;
    // float4 dir = normalize(lightVec - wpos);
     //outData.color = clamp(dot(normalize(wnormal), dir), 0, 1);
     
@@ -85,17 +83,20 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 diffuse;
     float4 ambient;
     float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
-    inData.normal.z = 0;
-    float4 color = clamp(dot(normalize(inData.normal.xyz), -dir), 0, 1);
+   // inData.normal.z = 0;
+    float4 color = saturate(dot(normalize(inData.normal.xyz), dir));
     float len = length(lightPosition.xyz - inData.wpos.xyz);
     float3 k = { 0.2f, 0.2f, 1.0f };
     float dTerm = 1.0f / (k.x + k.y * len + k.z * len * len);
+    
+    float4 R = reflect(normalize(inData.normal), normalize(float4(dir, 1.0)));
+    float4 specular = pow(saturate(dot(R, normalize(inData.eyev))), shininess) * specularColor;
     
     if (isTexture == false)
     {
         //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
         diffuse = diffuseColor * color * factor.x * dTerm;
-        ambient = diffuseColor * ambientSource * factor.x;
+        ambient = diffuseColor * ambientSource;
 
     }
     else
@@ -105,7 +106,7 @@ float4 PS(VS_OUT inData) : SV_Target
 
     }
     
-    return diffuse + ambient;
+    return diffuse + ambient + specular;
     
     //return g_texture.Sample(g_sampler, inData.uv);
 }

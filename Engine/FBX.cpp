@@ -1,6 +1,7 @@
 #include "FBX.h"
 #include "Camera.h"
 #include <filesystem>
+#include "Input.h"
 
 namespace fs = std::filesystem;
 
@@ -8,6 +9,7 @@ FBX::FBX()
 	:pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr),
 	vertexCount_(-1), polygonCount_(-1)
 {
+	shederchenge = false;
 }
 
 //ロードしていろいろ初期化
@@ -234,8 +236,13 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 			if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId)) {
 				FbxDouble3 specular = pMaterial->Specular;
 				FbxDouble shininess = pMaterial->Shininess;
+				
 
 				//ここで自分のpMaterialList[i]に値を設定
+				pMaterialList_[i].specular = { (float)specular[0],(float)specular[1],(float)specular[2],1.0f };
+				pMaterialList_[i].shininess = { (float)shininess,(float)shininess ,(float)shininess ,1.0f };
+			}
+			else{
 				pMaterialList_[i].specular = { 0.0f,0.0f,0.0f,1.0f };
 				pMaterialList_[i].shininess = { 10.0f,10.0f,10.0f,1.0f };
 			}
@@ -250,9 +257,16 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 void FBX::Draw(Transform& transform)
 {
 	//Quadをアレンジ
-	Direct3D::SetShader(SHADER_POINT);
-	transform.Calculation();
 
+	if (Input::IsKeyDown(DIK_SPACE))
+		shederchenge = !shederchenge;
+	
+	//if (shederchenge)
+		Direct3D::SetShader(SHADER_POINT);
+	//else
+	//	Direct3D::SetShader(SHADER_3D);
+
+	transform.Calculation();
 
 
 	// インデックスバッファーをセット
