@@ -8,6 +8,7 @@ enum SHADER_TYPE {
 	SHADER_3D,
 	SHADER_CRT,
 	SHADER_POINT,
+	SHADER_TOON,
 	SHADER_MAX
 };
 
@@ -38,6 +39,7 @@ namespace Direct3D
 	HRESULT InitShader2D();
 	HRESULT InitShaderCRT();
 	HRESULT InitPointLightShader();
+	HRESULT InitShaderToon();
 
 	void SetShader(SHADER_TYPE type);
 

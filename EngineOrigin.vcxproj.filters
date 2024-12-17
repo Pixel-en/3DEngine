@@ -132,6 +132,9 @@
     <FxCompile Include="Engine\PointLightShader.hlsl">
       <Filter>ソース ファイル\Engine\Sheder</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\ToonShader.hlsl">
+      <Filter>ソース ファイル\Engine\Sheder</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

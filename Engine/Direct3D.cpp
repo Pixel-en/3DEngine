@@ -169,6 +169,9 @@ HRESULT Direct3D::InitShader()
     if (FAILED(InitPointLightShader())) {
         return E_FAIL;
     }
+    if (FAILED(InitShaderToon())) {
+        return E_FAIL;
+    }
     return S_OK;
 }
 
@@ -178,7 +181,7 @@ HRESULT Direct3D::InitShader3D()
 
     // 頂点シェーダの作成
     ID3DBlob* pCompileVS = nullptr;
-    D3DCompileFromFile(L"Engine/simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+    D3DCompileFromFile(L"Engine/Simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
     assert(pCompileVS != nullptr);
     hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL,
         &shaderBundle[SHADER_TYPE::SHADER_3D].pVertexShader_);
@@ -207,7 +210,7 @@ HRESULT Direct3D::InitShader3D()
 
     // ピクセルシェーダの作成（コンパイル）
     ID3DBlob* pCompilePS = nullptr;
-    D3DCompileFromFile(L"Engine/simple3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+    D3DCompileFromFile(L"Engine/Simple3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
     hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL,
         &shaderBundle[SHADER_TYPE::SHADER_3D].pPixelShader_);
@@ -229,7 +232,7 @@ HRESULT Direct3D::InitShader3D()
         MessageBox(NULL, L"ラスタライザステートの作成に失敗", NULL, MB_OK);
         return hr;
     }
-    //3D用のシェーダー設定の皆さん ここまで
+
     return S_OK;
 }
 
@@ -285,7 +288,7 @@ HRESULT Direct3D::InitShader2D()
         MessageBox(NULL, L"ラスタライザステートの作成に失敗", NULL, MB_OK);
         return hr;
     }
-    //２D用のシェーダー設定の皆さん ここまで
+
 
     return S_OK;
 }
@@ -343,7 +346,7 @@ HRESULT Direct3D::InitShaderCRT()
         MessageBox(NULL, L"ラスタライザステートの作成に失敗", NULL, MB_OK);
         return hr;
     }
-    //２D用のシェーダー設定の皆さん ここまで
+
 
     return S_OK;
 }
@@ -405,7 +408,68 @@ HRESULT Direct3D::InitPointLightShader()
         MessageBox(NULL, L"ラスタライザステートの作成に失敗", NULL, MB_OK);
         return hr;
     }
-    //3D用のシェーダー設定の皆さん ここまで
+
+    return S_OK;
+}
+
+HRESULT Direct3D::InitShaderToon()
+{
+    HRESULT hr;
+
+    // 頂点シェーダの作成
+    ID3DBlob* pCompileVS = nullptr;
+    D3DCompileFromFile(L"Engine/ToonShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+    assert(pCompileVS != nullptr);
+    hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL,
+        &shaderBundle[SHADER_TYPE::SHADER_TOON].pVertexShader_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"頂点シェーダの作成に失敗", NULL, MB_OK);
+        return hr;
+    }
+
+    //頂点インプットレイアウト
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //位置
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UV座標
+      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//法線
+    };
+    hr = pDevice->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
+        &shaderBundle[SHADER_TYPE::SHADER_TOON].pVertexLayout_);
+
+    pCompileVS->Release();
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"頂点インプットレイアウトの作成に失敗", NULL, MB_OK);
+        return hr;
+    }
+
+    // ピクセルシェーダの作成（コンパイル）
+    ID3DBlob* pCompilePS = nullptr;
+    D3DCompileFromFile(L"Engine/ToonShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+    assert(pCompileVS != nullptr);
+    hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL,
+        &shaderBundle[SHADER_TYPE::SHADER_TOON].pPixelShader_);
+    pCompilePS->Release();
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"ピクセルシェーダの作成に失敗", NULL, MB_OK);
+        return hr;
+    }
+
+    //ラスタライザ作成
+    D3D11_RASTERIZER_DESC rdc = {};
+    rdc.CullMode = D3D11_CULL_BACK;  //多角形の裏側は描画しない（カリング）
+    rdc.FillMode = D3D11_FILL_SOLID; //多角形の内部を塗りつぶす
+    rdc.FrontCounterClockwise = FALSE; //反時計回りを表にするかどうか（がfalseなので時計回りが表）
+    hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_TOON].pRasterizerState_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"ラスタライザステートの作成に失敗", NULL, MB_OK);
+        return hr;
+    }
+
     return S_OK;
 }
 
