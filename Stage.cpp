@@ -26,10 +26,8 @@ void Stage::InitConstantBuffer()
 Stage::Stage(GameObject* parent)
 	:GameObject(parent,"Stage"),pConstantBuffer_(nullptr)
 {
-	trans[3] = transform_;
-	trans[3].position_.y -= 1;
 	lightpos.position_ = { Direct3D::GetGlovalLightVec().x,Direct3D::GetGlovalLightVec().y,Direct3D::GetGlovalLightVec().z };
-	hFloor_ = 0;
+
 }
 
 Stage::~Stage()
@@ -38,8 +36,22 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
+	hModel_[0] = Model::Load("Assets\\Torus_TP.fbx");
+	hModel_[1] = Model::Load("Assets\\Torus_TL.fbx");
+	hModel_[2] = Model::Load("Assets\\Torus_P.fbx");
+	hModel_[3] = Model::Load("Assets\\Torus_L.fbx");
+
 	hlightmodel = Model::Load("Assets\\Sphere.fbx");
-	hFloor_ = Model::Load("Assets\\Torus.fbx");
+
+	for (int i = 0; i < 4; i++) {
+		trans[i] = transform_;
+		trans[i].rotate_.x = 90;
+		trans[i].position_.z += 2;
+	}
+	trans[0].position_.x -= 5;
+	trans[1].position_.x -= 2;
+	trans[2].position_.x += 2;
+	trans[3].position_.x += 5;
 
 	this->InitConstantBuffer();
 }
@@ -81,9 +93,11 @@ void Stage::Update()
 
 void Stage::Draw()
 {
+	for (int i = 0; i < 4; i++) {
+		Model::SetTransform(hModel_[i], trans[i]);
+		Model::Draw(hModel_[i]);
+	}
 
-	Model::SetTransform(hFloor_, trans[3]);
-	Model::Draw(hFloor_);
 	Model::SetTransform(hlightmodel, lightpos);
 	Model::Draw(hlightmodel);
 }

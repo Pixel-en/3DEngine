@@ -1,78 +1,74 @@
+
 #pragma once
-#include <DirectXMath.h>
+
+#include <d3d11.h>
 #include <fbxsdk.h>
-#include "Direct3D.h"
-#include "Texture.h"
-#include <vector>
+#include <string>
 #include "Transform.h"
-#include "filesystem"
+#include <vector>
+
 
 #pragma comment(lib, "LibFbxSDK-MD.lib")
-//#pragma comment(lib, "LibFbxSDK-MT.lib")
-#pragma comment(lib, "LibXml2-MT.lib")
-#pragma comment(lib, "zlib-MT.lib")
+#pragma comment(lib, "LibXml2-MD.lib")
+#pragma comment(lib, "zlib-MD.lib")
 
+using std::vector;
 
-class FBX
+class Texture;
+
+class Fbx
 {
 	//マテリアル
 	struct MATERIAL
 	{
 		Texture* pTexture;
-		XMFLOAT4 diffuse;
-		XMFLOAT4 specular;	//鏡面反射係数
-		XMFLOAT4 shininess;	//鏡面反射のParameter
-		XMFLOAT4 ambient;	//環境校の反射係数)
-		XMFLOAT2 factor;
+		XMFLOAT4 diffuse;		//鏡面反射係数　ベクトル
+		XMFLOAT4 specular;		//鏡面反射係数　ベクトル(色）
+		XMFLOAT4 shininess;		//鏡面反射のパラメータ スカラ
+		XMFLOAT4 ambient;		//環境光の反射係数ベクトル
+		XMFLOAT4 factor;		//スカラ
 	};
-
 
 	struct CONSTBUFFER_MODEL
 	{
-		XMMATRIX	matWVP;		//スクリーン変換マトリクス
-		XMMATRIX    matW;		//ワールド変換マトリクス
-		XMMATRIX	matNormal;	//法線のワールド変換用マトリクス
-		XMFLOAT4	diffuseColor;	//RGBの拡散反射係数(色)
-		//XMFLOAT4	globalLightvec;	//光源位置
-		XMFLOAT2	diffuseFactor;	//拡散光の反射係数
+		XMMATRIX	matWVP;			//スクリーン変換マトリクス
+		XMMATRIX	matW;			//ワールド変換マトリクス
+		XMMATRIX	matNormal;		//法線ワールド変換用マトリクス
+		XMFLOAT4	diffuseColor;	//RGBの拡散反射係数
+		XMFLOAT4	diffuseFactor;	//拡散光の反射係数
 		XMFLOAT4	ambientColor;
-		XMFLOAT4    specularColor;
+		XMFLOAT4	specularColor;
 		XMFLOAT4	shininess;
-		int			isTextured;	//テクスチャが貼ってあるかどうか
+		int			isTextured;
 	};
 
-	//頂点情報
 	struct VERTEX
 	{
-		XMVECTOR position;
-		XMVECTOR uv;
-		XMVECTOR normal;
+		XMVECTOR position;//位置
+		XMVECTOR uv; //テクスチャ座標
+		XMVECTOR normal; //法線ベクトル
 	};
-
-	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
-	ID3D11Buffer** pIndexBuffer_;	//インデックスバッファ
-	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
-	std::vector<MATERIAL> pMaterialList_;	
 
 	int vertexCount_;	//頂点数
 	int polygonCount_;	//ポリゴン数
 	int materialCount_;	//マテリアルの個数
+
+	ID3D11Buffer* pVertexBuffer_;
+	ID3D11Buffer** pIndexBuffer_;
+	ID3D11Buffer* pConstantBuffer_;
+	std::vector<MATERIAL> pMaterialList_;
+	vector <int> indexCount_;
 
 	void InitVertex(fbxsdk::FbxMesh* mesh);
 	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void InitConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 
-	std::vector<int> indexcount;
-
-	bool shederchenge;
-
+	bool shaderchenge;
 public:
 
-	FBX();
+	Fbx();
 	HRESULT Load(std::string fileName);
-	void Draw(Transform& transform);
-	void Release();
-
+	void    Draw(Transform& transform);
+	void    Release();
 };
-

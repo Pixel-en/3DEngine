@@ -8,6 +8,7 @@ SamplerState g_sampler : register(s0); //サンプラー
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
 //───────────────────────────────────────
+
 cbuffer gModel : register(b0)
 {
     //変換行列、視点、光源
@@ -16,10 +17,10 @@ cbuffer gModel : register(b0)
     float4x4 matNormal; //ワールド行列
     float4 diffuseColor; // ディフューズカラー（マテリアルの色）拡散反射係数
     //float4 lightPosition; //平行光源のベクトル
+    float4 factor; //ディフューズの反射の強さ
     float4 ambientColor;
     float4 specularColor;
     float4 shininess;
-    float2 factor; //ディフューズの反射の強さ
     bool isTexture; // テクスチャ貼ってあるかどうか
 };
 
@@ -85,8 +86,8 @@ float4 PS(VS_OUT inData) : SV_Target
     float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
    // inData.normal.z = 0;
     float4 color = saturate(dot(normalize(inData.normal.xyz), dir));
-    float len = length(lightPosition.xyz - inData.wpos.xyz);
     float3 k = { 0.2f, 0.2f, 1.0f };
+    float len = length(lightPosition.xyz - inData.wpos.xyz);
     float dTerm = 1.0f / (k.x + k.y * len + k.z * len * len);
     
     float4 R = reflect(normalize(inData.normal), normalize(float4(dir, 1.0)));
@@ -95,7 +96,7 @@ float4 PS(VS_OUT inData) : SV_Target
     if (isTexture == false)
     {
         //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
-        diffuse = diffuseColor * color * factor.x * dTerm;
+        diffuse = diffuseColor * color * dTerm * factor.x;
         ambient = diffuseColor * ambientSource;
 
     }

@@ -22,7 +22,7 @@ int Model::Load(std::string filename)
 	}
 	//“¯–¼‚Ìƒtƒ@ƒCƒ‹‚ª‚È‚©‚Á‚½ê‡
 	if (pData->pFbx_ == nullptr) {
-		pData->pFbx_ = new FBX;
+		pData->pFbx_ = new Fbx;
 		pData->pFbx_->Load(filename);
 	}
 

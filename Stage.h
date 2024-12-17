@@ -9,11 +9,10 @@ struct CONSTBUFFER_STAGE {
 
 class Stage:public GameObject
 {
-	int hModel_[3];
+	int hModel_[4];
 	int hlightmodel;
 	Transform trans[4];
 	Transform lightpos;
-	int hFloor_;
 
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
 	void InitConstantBuffer();
