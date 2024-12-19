@@ -54,7 +54,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.pos = mul(pos, matWVP);
     outData.uv = uv;
     
-    normal = mul(normal, matNormal);
+    normal = mul(normal, matW);
     normal = normalize(normal);
     
     float4 light = lightPosition;

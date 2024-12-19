@@ -24,7 +24,7 @@ class FBX
 		XMFLOAT4 specular;	//鏡面反射係数
 		XMFLOAT4 shininess;	//鏡面反射のParameter
 		XMFLOAT4 ambient;	//環境校の反射係数)
-		XMFLOAT2 factor;
+		XMFLOAT4 factor;
 	};
 
 
@@ -35,7 +35,7 @@ class FBX
 		XMMATRIX	matNormal;	//法線のワールド変換用マトリクス
 		XMFLOAT4	diffuseColor;	//RGBの拡散反射係数(色)
 		//XMFLOAT4	globalLightvec;	//光源位置
-		XMFLOAT2	diffuseFactor;	//拡散光の反射係数
+		XMFLOAT4	diffuseFactor;	//拡散光の反射係数
 		XMFLOAT4	ambientColor;
 		XMFLOAT4    specularColor;
 		XMFLOAT4	shininess;
@@ -58,6 +58,9 @@ class FBX
 	int vertexCount_;	//頂点数
 	int polygonCount_;	//ポリゴン数
 	int materialCount_;	//マテリアルの個数
+
+	std::vector<VERTEX> vertices_;
+	std::vector<int>* index_; //インデックス情報を入れる配列
 
 	void InitVertex(fbxsdk::FbxMesh* mesh);
 	void InitIndex(fbxsdk::FbxMesh* mesh);

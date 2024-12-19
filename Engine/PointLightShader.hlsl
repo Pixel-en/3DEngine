@@ -52,6 +52,8 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     VS_OUT outData;
 
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
+    
+    
 	//スクリーン座標に変換し、ピクセルシェーダーへ
     float4 spos = mul(pos, matWVP);
     float4 wpos = mul(pos, matW);   //ワールド座標変換
@@ -80,10 +82,10 @@ float4 PS(VS_OUT inData) : SV_Target
     //float cos_alpha = inData.cos_alpha; //拡散反射係数
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
-    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
+    float4 ambientSource = float4(0.5f, 0.5f, 0.5f, 1.0);
     float4 diffuse;
     float4 ambient;
-    float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
+    float3 dir = -normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
    // inData.normal.z = 0;
     float4 color = saturate(dot(normalize(inData.normal.xyz), dir));
     float3 k = { 0.2f, 0.2f, 1.0f };
@@ -107,7 +109,8 @@ float4 PS(VS_OUT inData) : SV_Target
 
     }
     
-    return diffuse + ambient + specular;
-    
+    //return diffuse + ambient + specular;
+    //return g_texture.Sample(g_sampler, inData.uv);
+    return diffuseColor;
     //return g_texture.Sample(g_sampler, inData.uv);
 }

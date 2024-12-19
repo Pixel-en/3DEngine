@@ -39,6 +39,7 @@ struct VS_OUT
     float4 pos : SV_POSITION; //位置
     float2 uv : TEXCOORD; //UV座標
     float4 color : COLOR; //色（明るさ）
+    float4 normal : NORMAL;
 };
 
 //───────────────────────────────────────
@@ -59,6 +60,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     
     float4 light = lightPosition;
     light = normalize(light);
+
     
     outData.color = clamp(dot(normal, light), 0, 1);
 	//まとめて出力
@@ -75,27 +77,39 @@ float4 PS(VS_OUT inData) : SV_Target
     //float cos_alpha = inData.cos_alpha; //拡散反射係数
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
-    //float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-    float4 ambientSource = float4(0.5, 0.5, 0.5, 0.5);
+    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+    float4 ambientSource = float4(0.2f, 0.2f, 0.2f, 0.0f);
     float4 diffuse;
     float ambient;
+    
+    float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
+    float4 n1 = float4(1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1);
+    float4 n2 = float4(2.0 / 4.0, 2.0 / 4.0, 2.0 / 4.0, 1);
+    float4 n3 = float4(3.0 / 4.0, 3.0 / 4.0, 3.0 / 4.0, 1);
+    float4 n4 = float4(4.0 / 4.0, 4.0 / 4.0, 4.0 / 4.0, 1);
+    float4 tI = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 0.6 * step(n3, inData.color);
+    
     
     if (isTexture == false)
     {
         //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
-        diffuse = diffuseColor * inData.color * factor.x;
-        ambient = diffuseColor * ambientSource * factor.x;
+        diffuse = diffuseColor * tI * factor.x;
+        ambient = diffuseColor * ambientSource ;
 
     }
     else
     {
-        diffuse = g_texture.Sample(g_sampler, inData.uv) * inData.color * factor.x;
-        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
+        diffuse = g_texture.Sample(g_sampler, inData.uv) * tI * factor.x;
+        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource;
 
     }
         //return Id * Kd * cos_alpha + Id * Kd * ambentSource;
     
-    return diffuse + ambient;
-    
+    //return diffuse + ambient;
+    //return outColor;
+    //return diffuse + ambient;
     //return g_texture.Sample(g_sampler, inData.uv);
+    float2 uv = float2(tI.x, 0);
+    return g_texture.Sample(g_sampler, uv);
+
 }
