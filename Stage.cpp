@@ -45,7 +45,6 @@ void Stage::Initialize()
 
 	for (int i = 0; i < 4; i++) {
 		trans[i] = transform_;
-		trans[i].rotate_.x = 90;
 		trans[i].position_.z += 2;
 	}
 	trans[0].position_.x -= 5;
