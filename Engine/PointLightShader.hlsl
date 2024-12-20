@@ -21,7 +21,7 @@ cbuffer gModel : register(b0)
     float4 ambientColor;
     float4 specularColor;
     float4 shininess;
-    bool isTexture; // テクスチャ貼ってあるかどうか
+    int isTexture; // テクスチャ貼ってあるかどうか
 };
 
 cbuffer gStage : register(b1)
@@ -82,12 +82,12 @@ float4 PS(VS_OUT inData) : SV_Target
     //float cos_alpha = inData.cos_alpha; //拡散反射係数
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
-    float4 ambientSource = float4(0.5f, 0.5f, 0.5f, 1.0);
+    float4 ambientSource = float4(0.2f, 0.2f, 0.2f, 1.0);   //環境光
     float4 diffuse;
     float4 ambient;
-    float3 dir = -normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
+    float3 dir = normalize(lightPosition.xyz - inData.wpos.xyz); //ピクセル一のポリゴンの３次元座標変換 = wpos
    // inData.normal.z = 0;
-    float4 color = saturate(dot(normalize(inData.normal.xyz), dir));
+    float color = saturate(dot(normalize(inData.normal.xyz), dir));
     float3 k = { 0.2f, 0.2f, 1.0f };
     float len = length(lightPosition.xyz - inData.wpos.xyz);
     float dTerm = 1.0f / (k.x + k.y * len + k.z * len * len);
@@ -109,8 +109,8 @@ float4 PS(VS_OUT inData) : SV_Target
 
     }
     
-    //return diffuse + ambient + specular;
+    return diffuse + ambient + specular;
     //return g_texture.Sample(g_sampler, inData.uv);
-    return diffuseColor;
+    //return diffuseColor;
     //return g_texture.Sample(g_sampler, inData.uv);
 }

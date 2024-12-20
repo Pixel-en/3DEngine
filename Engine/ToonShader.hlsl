@@ -5,6 +5,8 @@
 Texture2D g_texture : register(t0); //テクスチャー
 SamplerState g_sampler : register(s0); //サンプラー
 
+Texture2D g_toon_texture : register(t1);    //テクスチャー
+
 //───────────────────────────────────────
  // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
@@ -55,12 +57,10 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.pos = mul(pos, matWVP);
     outData.uv = uv;
     
-    normal = mul(normal, matNormal);
-    normal = normalize(normal);
+    outData.normal = mul(normal, matNormal);
     
     float4 light = lightPosition;
     light = normalize(light);
-
     
     outData.color = clamp(dot(normal, light), 0, 1);
 	//まとめて出力
@@ -110,6 +110,6 @@ float4 PS(VS_OUT inData) : SV_Target
     //return diffuse + ambient;
     //return g_texture.Sample(g_sampler, inData.uv);
     float2 uv = float2(tI.x, 0);
-    return g_texture.Sample(g_sampler, uv);
+    return g_toon_texture.Sample(g_sampler, uv);
 
 }

@@ -78,7 +78,7 @@ float4 PS(VS_OUT inData) : SV_Target
     //float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
     float4 ambientSource = float4(0.5, 0.5, 0.5, 0.5);
     float4 diffuse;
-    float ambient;
+    float4 ambient;
     
     if (isTexture == false)
     {

@@ -57,6 +57,10 @@ HRESULT FBX::Load(std::string fileName)
 
 	//マネージャ解放
 	pFbxManager->Destroy();
+
+	pToonTex_ = new Texture;
+	pToonTex_->Load("Assets\\toon.png");
+
 	return S_OK;
 }
 
@@ -246,7 +250,7 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 				pMaterialList_[i].shininess = { (float)shininess,(float)shininess ,(float)shininess ,1.0f };
 			}
 			else {
-				pMaterialList_[i].specular = { 0.0f,0.0f,0.0f,1.0f };
+				pMaterialList_[i].specular = { 1.0f,1.0f,1.0f,1.0f };
 				pMaterialList_[i].shininess = { 10.0f,10.0f,10.0f,1.0f };
 			}
 		}
@@ -323,6 +327,12 @@ void FBX::Draw(Transform& transform)
 			Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
 
 		}
+
+		ID3D11SamplerState* pSampler = pToonTex_->GetSampler();
+		ID3D11ShaderResourceView* pSRV = pToonTex_->GetSRV();
+		Direct3D::pContext->PSSetSamplers(1, 1, &pSampler);
+		Direct3D::pContext->PSSetShaderResources(1, 1, &pSRV);
+
 		//描画
 		Direct3D::pContext->DrawIndexed(indexcount[i], 0, 0);
 	}

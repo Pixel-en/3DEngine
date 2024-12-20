@@ -71,6 +71,8 @@ class FBX
 
 	bool shederchenge;
 
+	Texture* pToonTex_;
+
 public:
 
 	FBX();
