@@ -346,6 +346,7 @@ void Fbx::Draw(Transform& transform)
 		//•`‰æ
 		Direct3D::pContext->DrawIndexed(indexCount_[i], 0, 0);
 	}
+
 }
 
 void Fbx::Release()
