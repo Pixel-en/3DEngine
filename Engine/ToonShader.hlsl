@@ -5,7 +5,7 @@
 Texture2D g_texture : register(t0); //テクスチャー
 SamplerState g_sampler : register(s0); //サンプラー
 
-Texture2D g_toon_texture : register(t1);    //テクスチャー
+Texture2D g_toon_texture : register(t1); //テクスチャー
 
 //───────────────────────────────────────
  // コンスタントバッファ
@@ -42,6 +42,7 @@ struct VS_OUT
     float2 uv : TEXCOORD; //UV座標
     float4 color : COLOR; //色（明るさ）
     float4 normal : NORMAL;
+    float4 eyev : POSITION1;
 };
 
 //───────────────────────────────────────
@@ -63,6 +64,8 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     light = normalize(light);
     
     outData.color = clamp(dot(normal, light), 0, 1);
+    float4 posw = mul(pos, matW);
+    outData.eyev = eyePosition - posw;
 	//まとめて出力
     return outData;
 }
@@ -82,34 +85,52 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 diffuse;
     float ambient;
     
+    float NE = dot(inData.normal.xyz, normalize(inData.eyev.xyz)); //法線と視線のcosが取れる
+    
     float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-    float4 n1 = float4(1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1);
-    float4 n2 = float4(2.0 / 4.0, 2.0 / 4.0, 2.0 / 4.0, 1);
-    float4 n3 = float4(3.0 / 4.0, 3.0 / 4.0, 3.0 / 4.0, 1);
-    float4 n4 = float4(4.0 / 4.0, 4.0 / 4.0, 4.0 / 4.0, 1);
-    float4 tI = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 0.6 * step(n3, inData.color);
+    //float4 n1 = float4(1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1);
+    //float4 n2 = float4(2.0 / 4.0, 2.0 / 4.0, 2.0 / 4.0, 1);
+    //float4 n3 = float4(3.0 / 4.0, 3.0 / 4.0, 3.0 / 4.0, 1);
+    //float4 n4 = float4(4.0 / 4.0, 4.0 / 4.0, 4.0 / 4.0, 1);
+    //float4 tI = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 0.6 * step(n3, inData.color);
+    
+    float4 reflection = reflect(normalize(-lightPosition), inData.normal);
+    float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess);
+    float2 uv;
+    uv.x = NL;
+    uv.y = 0.5; //0から1ならなんでもいい
+    float tI = g_toon_texture.Sample(g_sampler, uv);
+   // float stI = g_toon_texture.Sample(g_sampler, float2(specular.x, 0));
     
     
     if (isTexture == false)
     {
         //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
-        diffuse = diffuseColor * tI * factor.x;
-        ambient = diffuseColor * ambientSource ;
+        diffuse = lightSource * diffuseColor * tI;
+        ambient = lightSource * diffuseColor * ambientColor;
 
     }
     else
     {
-        diffuse = g_texture.Sample(g_sampler, inData.uv) * tI * factor.x;
-        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource;
+        diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * tI;
+        ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 
     }
-        //return Id * Kd * cos_alpha + Id * Kd * ambentSource;
+    
+    float4 ret = diffuse + ambient;
+    if (NE > -0.2 && NE < 0.2)
+    {
+        ret = float4(0, 0, 0, 1);
+    }
+        
+    return ret;
+    //return Id * Kd * cos_alpha + Id * Kd * ambentSource;
     
     //return diffuse + ambient;
     //return outColor;
     //return diffuse + ambient;
     //return g_texture.Sample(g_sampler, inData.uv);
-    float2 uv = float2(tI.x, 0);
-    return g_toon_texture.Sample(g_sampler, uv);
+    //float2 uv = float2(tI.x, 0);
+    //return g_toon_texture.Sample(g_sampler, uv);
 
 }

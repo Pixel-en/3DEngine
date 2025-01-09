@@ -264,15 +264,16 @@ void FBX::Draw(Transform& transform)
 {
 	//Quad‚ðƒAƒŒƒ“ƒW
 
-	if (Input::IsKeyDown(DIK_SPACE))
-		shederchenge = !shederchenge;
+	//if (Input::IsKeyDown(DIK_SPACE))
+	//	shederchenge = !shederchenge;
 
-	if (shederchenge) {
-		Direct3D::SetShader(SHADER_POINT);
-	}
-	else {
-		Direct3D::SetShader(SHADER_3D);
-	}
+	//if (shederchenge) {
+	//	Direct3D::SetShader(SHADER_POINT);
+	//}
+	//else {
+	//	Direct3D::SetShader(SHADER_3D);
+	//}
+	Direct3D::SetShader(SHADER_TOON);
 	transform.Calculation();
 
 
