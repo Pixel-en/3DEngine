@@ -45,29 +45,23 @@ struct VS_OUT
     float4 normal : NORMAL;
 };
 
+
+
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+float4 VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL):SV_Position
 {
 	//ピクセルシェーダーへ渡す情報
-    VS_OUT outData;
-
-	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
-	//スクリーン座標に変換し、ピクセルシェーダーへ
-    outData.pos = mul(pos, matWVP);
-    outData.uv = uv;
+    float4 outPos;
     
-    outData.normal = mul(normal, matNormal);
+    normal.w = 0;
+    normal = normalize(normal);
+    outPos = pos + normal * 0.1;
+    outPos = mul(pos, matWVP);
     
-    float4 light = lightPosition;
-    light = normalize(light);
-    
-    outData.color = clamp(dot(normal, light), 0, 1);
-    //float4 posw = mul(pos, matW);
-    //outData.eyev = eyePosition - posw;
 	//まとめて出力
-    return outData;
+    return outPos;
 }
 
 //───────────────────────────────────────
@@ -80,40 +74,40 @@ float4 PS(VS_OUT inData) : SV_Target
     //float cos_alpha = inData.cos_alpha; //拡散反射係数
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
-    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-    float4 ambientSource = float4(0.2f, 0.2f, 0.2f, 0.0f);
-    float4 diffuse;
-    float ambient;
+   // float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+   // float4 ambientSource = float4(0.2f, 0.2f, 0.2f, 0.0f);
+   // float4 diffuse;
+   // float ambient;
     
-    float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-    //float4 n1 = float4(1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1);
-    //float4 n2 = float4(2.0 / 4.0, 2.0 / 4.0, 2.0 / 4.0, 1);
-    //float4 n3 = float4(3.0 / 4.0, 3.0 / 4.0, 3.0 / 4.0, 1);
-    //float4 n4 = float4(4.0 / 4.0, 4.0 / 4.0, 4.0 / 4.0, 1);
-    //float4 tI = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 0.6 * step(n3, inData.color);
+   // float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
+   // //float4 n1 = float4(1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1);
+   // //float4 n2 = float4(2.0 / 4.0, 2.0 / 4.0, 2.0 / 4.0, 1);
+   // //float4 n3 = float4(3.0 / 4.0, 3.0 / 4.0, 3.0 / 4.0, 1);
+   // //float4 n4 = float4(4.0 / 4.0, 4.0 / 4.0, 4.0 / 4.0, 1);
+   // //float4 tI = 0.1 * step(n1, inData.color) + 0.3 * step(n2, inData.color) + 0.6 * step(n3, inData.color);
     
-    //float4 reflection = reflect(normalize(-lightPosition), inData.normal);
-    //float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess);
-    float2 uv;
-    uv.x = NL;
-    uv.y = 0.5; //0から1ならなんでもいい
-    float4 tI = g_toon_texture.Sample(g_sampler, uv);
-   // float stI = g_toon_texture.Sample(g_sampler, float2(specular.x, 0));
+   // //float4 reflection = reflect(normalize(-lightPosition), inData.normal);
+   // //float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess);
+   // float2 uv;
+   // uv.x = NL;
+   // uv.y = 0.5; //0から1ならなんでもいい
+   // float4 tI = g_toon_texture.Sample(g_sampler, uv);
+   //// float stI = g_toon_texture.Sample(g_sampler, float2(specular.x, 0));
     
     
-    if (isTexture == false)
-    {
-        //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
-        diffuse = diffuseColor * tI;
-        ambient = diffuseColor * ambientColor;
+   // if (isTexture == false)
+   // {
+   //     //return Id * cos_alpha * diffuseColor + Id * diffuseColor * ambentSource;
+   //     diffuse = diffuseColor * tI;
+   //     ambient = diffuseColor * ambientColor;
 
-    }
-    else
-    {
-        diffuse = g_texture.Sample(g_sampler, inData.uv) * tI;
-        ambient = g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+   // }
+   // else
+   // {
+   //     diffuse = g_texture.Sample(g_sampler, inData.uv) * tI;
+   //     ambient = g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 
-    }
+   // }
     
     //float4 ret = diffuse + ambient;
     //if (NE > -0.2 && NE < 0.2)
@@ -124,11 +118,11 @@ float4 PS(VS_OUT inData) : SV_Target
     //return ret;
     //return Id * Kd * cos_alpha + Id * Kd * ambentSource;
     
-    return diffuse + ambient;
+    //return diffuse + ambient;
     //return outColor;
     //return diffuse + ambient;
     //return g_texture.Sample(g_sampler, inData.uv);
     //float2 uv = float2(tI.x, 0);
     //return g_toon_texture.Sample(g_sampler, uv);
-
+    return float4(1.0, 0, 0, 1.0);
 }
