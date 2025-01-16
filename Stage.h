@@ -13,6 +13,7 @@ class Stage:public GameObject
 	int hlightmodel;
 	Transform trans[4];
 	Transform lightpos;
+	bool isRotate_;
 
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
 	void InitConstantBuffer();

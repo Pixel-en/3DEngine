@@ -1,12 +1,16 @@
-#include "Stage.h"
+ï»¿#include "Stage.h"
 #include "Engine/Model.h"
 #include "Engine/Input.h"
 #include "Engine/Camera.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx11.h"
+#include "imgui/imgui_impl_win32.h"
+
 
 void Stage::InitConstantBuffer()
 {	
-	//Quad‚Æˆê
+	//Quadã¨ä¸€ç·’
 	D3D11_BUFFER_DESC cb;
 	cb.ByteWidth = sizeof(CONSTBUFFER_STAGE);
 	cb.Usage = D3D11_USAGE_DYNAMIC;
@@ -19,12 +23,12 @@ void Stage::InitConstantBuffer()
 	hr = Direct3D::pDevice->CreateBuffer(&cb, nullptr, &pConstantBuffer_);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚Ìì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
+		MessageBox(NULL, L"ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ", L"ã‚¨ãƒ©ãƒ¼", MB_OK);
 	}
 }
 
 Stage::Stage(GameObject* parent)
-	:GameObject(parent,"Stage"),pConstantBuffer_(nullptr)
+	:GameObject(parent, "Stage"), pConstantBuffer_(nullptr), isRotate_(true)
 {
 	lightpos.position_ = { Direct3D::GetGlovalLightVec().x,Direct3D::GetGlovalLightVec().y,Direct3D::GetGlovalLightVec().z };
 
@@ -67,38 +71,47 @@ void Stage::Update()
 		lightpos.position_.z += 0.1f;
 	if (Input::IsKey(DIK_DOWN))
 		lightpos.position_.z -= 0.1f;
-	if(Input::IsKey(DIK_W))
+	if (Input::IsKey(DIK_W))
 		lightpos.position_.y += 0.1f;
 	if (Input::IsKey(DIK_S))
 		lightpos.position_.y -= 0.1f;
 	XMFLOAT4 temp = { lightpos.position_.x,lightpos.position_.y,lightpos.position_.z,Direct3D::GetGlovalLightVec().w };
 	Direct3D::SetGlobalLightVec(temp);
 
-	//ƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚ÌÝ’è‚ÆAƒVƒF[ƒ_[‚Ö‚ÌƒRƒ“ƒXƒ^ƒ“ƒgƒoƒbƒtƒ@‚ÌƒZƒbƒg‚ð‘‚­
+	//ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ã®è¨­å®šã¨ã€ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ã®ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡ã®ã‚»ãƒƒãƒˆã‚’æ›¸ã
 	CONSTBUFFER_STAGE cb;
 	cb.lightPosition = Direct3D::GetGlovalLightVec();
 	XMStoreFloat4(&cb.eyePosition, Camera::GetPosition());
 
 	D3D11_MAPPED_SUBRESOURCE pdata;
-	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPU‚©‚ç‚Ìƒf[ƒ^ƒAƒNƒZƒX‚ðŽ~‚ß‚é
-	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// ƒf[ƒ^‚ð’l‚ð‘—‚é
+	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUã‹ã‚‰ã®ãƒ‡ãƒ¼ã‚¿ã‚¢ã‚¯ã‚»ã‚¹ã‚’æ­¢ã‚ã‚‹
+	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// ãƒ‡ãƒ¼ã‚¿ã‚’å€¤ã‚’é€ã‚‹
 
-	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//ÄŠJ
+	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//å†é–‹
 
-	Direct3D::pContext->VSSetConstantBuffers(1, 1, &pConstantBuffer_);	//’¸“_ƒVƒF[ƒ_[—p	
-	Direct3D::pContext->PSSetConstantBuffers(1, 1, &pConstantBuffer_);	//ƒsƒNƒZƒ‹ƒVƒF[ƒ_[—p
+	Direct3D::pContext->VSSetConstantBuffers(1, 1, &pConstantBuffer_);	//é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ç”¨	
+	Direct3D::pContext->PSSetConstantBuffers(1, 1, &pConstantBuffer_);	//ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ç”¨
 
 }
 
 void Stage::Draw()
 {
 	for (int i = 0; i < 4; i++) {
+		if (isRotate_) {
+			trans[i].rotate_.y += 0.05f;
+		}
+
 		Model::SetTransform(hModel_[i], trans[i]);
 		Model::Draw(hModel_[i]);
 	}
 
 	Model::SetTransform(hlightmodel, lightpos);
 	Model::Draw(hlightmodel);
+
+	{
+		//ImGUIã‚’å‡ºã™
+
+	}
 }
 
 void Stage::Release()
