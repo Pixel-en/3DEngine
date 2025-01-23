@@ -186,6 +186,9 @@
     <FxCompile Include="Engine\OutLineShader.hlsl">
       <Filter>ソース ファイル\Engine\Sheder</Filter>
     </FxCompile>
+    <FxCompile Include="Engine\normalmapping.hlsl">
+      <Filter>ソース ファイル\Engine\Sheder</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

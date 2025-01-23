@@ -205,6 +205,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Engine\CRTRender.hlsl" />
+    <FxCompile Include="Engine\normalmapping.hlsl" />
     <FxCompile Include="Engine\OutLineShader.hlsl" />
     <FxCompile Include="Engine\PointLightShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

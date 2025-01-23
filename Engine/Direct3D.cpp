@@ -1,34 +1,34 @@
-#include <d3dcompiler.h>
+ï»¿#include <d3dcompiler.h>
 #include "Direct3D.h"
 
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 
-//•Ï”
+//å¤‰æ•°
 namespace Direct3D
 {
-    ID3D11Device* pDevice;    //ƒfƒoƒCƒX
-    ID3D11DeviceContext* pContext;    //ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg
-    IDXGISwapChain* pSwapChain;    //ƒXƒƒbƒvƒ`ƒFƒCƒ“
-    ID3D11RenderTargetView* pRenderTargetView;  //ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[
+    ID3D11Device* pDevice;    //ãƒ‡ãƒã‚¤ã‚¹
+    ID3D11DeviceContext* pContext;    //ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
+    IDXGISwapChain* pSwapChain;    //ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³
+    ID3D11RenderTargetView* pRenderTargetView;  //ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼
 
-    ID3D11VertexShader* pVertexShader = nullptr;  //’¸“_ƒVƒF[ƒ_[
-    ID3D11PixelShader* pPixelShader = nullptr;    //ƒsƒNƒZƒ‹ƒVƒF[ƒ_[
-    ID3D11InputLayout* pVertexLayout = nullptr;  //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
-    ID3D11RasterizerState* pRasterizerState = nullptr;  //ƒ‰ƒXƒ^ƒ‰ƒCƒU[
+    ID3D11VertexShader* pVertexShader = nullptr;  //é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+    ID3D11PixelShader* pPixelShader = nullptr;    //ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+    ID3D11InputLayout* pVertexLayout = nullptr;  //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+    ID3D11RasterizerState* pRasterizerState = nullptr;  //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ãƒ¼
 
-    ID3D11Texture2D* pDepthStencil;			//[“xƒXƒeƒ“ƒVƒ‹
-    ID3D11DepthStencilView* pDepthStencilView;		//[“xƒXƒeƒ“ƒVƒ‹ƒrƒ…[
+    ID3D11Texture2D* pDepthStencil;			//æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«
+    ID3D11DepthStencilView* pDepthStencilView;		//æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒ“ãƒ¥ãƒ¼
 
     struct SHADER_BUNDLE
     {
-        ID3D11VertexShader* pVertexShader_ = nullptr;  //’¸“_ƒVƒF[ƒ_[
-        ID3D11PixelShader* pPixelShader_ = nullptr;    //ƒsƒNƒZƒ‹ƒVƒF[ƒ_[
-        ID3D11InputLayout* pVertexLayout_ = nullptr;  //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
-        ID3D11RasterizerState* pRasterizerState_ = nullptr;  //ƒ‰ƒXƒ^ƒ‰ƒCƒU[
+        ID3D11VertexShader* pVertexShader_ = nullptr;  //é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+        ID3D11PixelShader* pPixelShader_ = nullptr;    //ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+        ID3D11InputLayout* pVertexLayout_ = nullptr;  //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+        ID3D11RasterizerState* pRasterizerState_ = nullptr;  //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ãƒ¼
     };
-    DirectX::XMFLOAT4 G_LightVec = { 0,0.5,0,0 };  //‘S‘Ì‚ÌŒõŒ¹ƒxƒNƒgƒ‹
+    DirectX::XMFLOAT4 G_LightVec = { 0,0.5,0,0 };  //å…¨ä½“ã®å…‰æºãƒ™ã‚¯ãƒˆãƒ«
 
     const int WINDOW_WIDTH = 800;
     const int WINDOW_HEIGHT = 600;
@@ -40,85 +40,85 @@ namespace Direct3D
 
 
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 {
     HRESULT hr;
 
-    ///////////////////////////‚¢‚ë‚¢‚ë€”õ‚·‚é‚½‚ß‚Ìİ’è///////////////////////////////
-  //‚¢‚ë‚¢‚ë‚Èİ’è€–Ú‚ğ‚Ü‚Æ‚ß‚½\‘¢‘Ì
+    ///////////////////////////ã„ã‚ã„ã‚æº–å‚™ã™ã‚‹ãŸã‚ã®è¨­å®š///////////////////////////////
+  //ã„ã‚ã„ã‚ãªè¨­å®šé …ç›®ã‚’ã¾ã¨ã‚ãŸæ§‹é€ ä½“
     DXGI_SWAP_CHAIN_DESC scDesc;
 
-    //‚Æ‚è‚ ‚¦‚¸‘S•”0
+    //ã¨ã‚Šã‚ãˆãšå…¨éƒ¨0
     ZeroMemory(&scDesc, sizeof(scDesc));
 
-    //•`‰ææ‚ÌƒtƒH[ƒ}ƒbƒg
-    scDesc.BufferDesc.Width = 0;    //‰æ–Ê•
-    scDesc.BufferDesc.Height = 0;  //‰æ–Ê‚‚³
-    scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // ‰½Fg‚¦‚é‚©
+    //æç”»å…ˆã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
+    scDesc.BufferDesc.Width = 0;    //ç”»é¢å¹…
+    scDesc.BufferDesc.Height = 0;  //ç”»é¢é«˜ã•
+    scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // ä½•è‰²ä½¿ãˆã‚‹ã‹
 
-    //FPSi1/60•b‚É1‰ñj
+    //FPSï¼ˆ1/60ç§’ã«1å›ï¼‰
     scDesc.BufferDesc.RefreshRate.Numerator = 60;
     scDesc.BufferDesc.RefreshRate.Denominator = 1;
 
-    //‚»‚Ì‘¼
-    scDesc.Windowed = TRUE;      //ƒEƒBƒ“ƒhƒEƒ‚[ƒh‚©ƒtƒ‹ƒXƒNƒŠ[ƒ“‚©
-    scDesc.OutputWindow = hWnd;    //ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
-    scDesc.BufferCount = 1;      //ƒoƒbƒNƒoƒbƒtƒ@‚Ì–‡”
-    scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;  //ƒoƒbƒNƒoƒbƒtƒ@‚Ìg‚¢“¹‰æ–Ê‚É•`‰æ‚·‚é‚½‚ß‚É
-    scDesc.SampleDesc.Count = 1;    //MSAAiƒAƒ“ƒ`ƒGƒCƒŠƒAƒXj‚Ìİ’è
-    scDesc.SampleDesc.Quality = 0;    // V
+    //ãã®ä»–
+    scDesc.Windowed = TRUE;      //ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰ã‹ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‹
+    scDesc.OutputWindow = hWnd;    //ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+    scDesc.BufferCount = 1;      //ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®æšæ•°
+    scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;  //ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®ä½¿ã„é“ï¼ç”»é¢ã«æç”»ã™ã‚‹ãŸã‚ã«
+    scDesc.SampleDesc.Count = 1;    //MSAAï¼ˆã‚¢ãƒ³ãƒã‚¨ã‚¤ãƒªã‚¢ã‚¹ï¼‰ã®è¨­å®š
+    scDesc.SampleDesc.Quality = 0;    // ã€ƒ
 
 
-    ////////////////ã‹Lİ’è‚ğ‚à‚Æ‚ÉƒfƒoƒCƒXAƒRƒ“ƒeƒLƒXƒgAƒXƒƒbƒvƒ`ƒFƒCƒ“‚ğì¬////////////////////////
+    ////////////////ä¸Šè¨˜è¨­å®šã‚’ã‚‚ã¨ã«ãƒ‡ãƒã‚¤ã‚¹ã€ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã€ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ã‚’ä½œæˆ////////////////////////
     D3D_FEATURE_LEVEL level;
     hr = D3D11CreateDeviceAndSwapChain(
-        nullptr,        // ‚Ç‚ÌƒrƒfƒIƒAƒ_ƒvƒ^‚ğg—p‚·‚é‚©HŠù’è‚È‚ç‚Înullptr‚Å
-        D3D_DRIVER_TYPE_HARDWARE,    // ƒhƒ‰ƒCƒo‚Ìƒ^ƒCƒv‚ğ“n‚·B‚Ó‚Â‚¤‚ÍHARDWARE
-        nullptr,        // ã‹L‚ğD3D_DRIVER_TYPE_SOFTWARE‚Éİ’è‚µ‚È‚¢‚©‚¬‚ènullptr
-        0,          // ‰½‚ç‚©‚Ìƒtƒ‰ƒO‚ğw’è‚·‚éBiƒfƒoƒbƒO‚ÍD3D11_CREATE_DEVICE_DEBUGHj
-        nullptr,        // ƒfƒoƒCƒXAƒRƒ“ƒeƒLƒXƒg‚ÌƒŒƒxƒ‹‚ğİ’èBnullptr‚É‚µ‚Æ‚¯‚ÎOK
-        0,          // ã‚Ìˆø”‚ÅƒŒƒxƒ‹‚ğ‰½ŒÂw’è‚µ‚½‚©
-        D3D11_SDK_VERSION,      // SDK‚Ìƒo[ƒWƒ‡ƒ“B•K‚¸‚±‚Ì’l
-        &scDesc,        // ã‚Å‚¢‚ë‚¢‚ëİ’è‚µ‚½\‘¢‘Ì
-        &pSwapChain,        // –³–Š®¬‚µ‚½SwapChain‚ÌƒAƒhƒŒƒX‚ª•Ô‚Á‚Ä‚­‚é
-        &pDevice,        // –³–Š®¬‚µ‚½DeviceƒAƒhƒŒƒX‚ª•Ô‚Á‚Ä‚­‚é
-        &level,          // –³–Š®¬‚µ‚½DeviceAContext‚ÌƒŒƒxƒ‹‚ª•Ô‚Á‚Ä‚­‚é
-        &pContext);        // –³–Š®¬‚µ‚½Context‚ÌƒAƒhƒŒƒX‚ª•Ô‚Á‚Ä‚­‚é
+        nullptr,        // ã©ã®ãƒ“ãƒ‡ã‚ªã‚¢ãƒ€ãƒ—ã‚¿ã‚’ä½¿ç”¨ã™ã‚‹ã‹ï¼Ÿæ—¢å®šãªã‚‰ã°nullptrã§
+        D3D_DRIVER_TYPE_HARDWARE,    // ãƒ‰ãƒ©ã‚¤ãƒã®ã‚¿ã‚¤ãƒ—ã‚’æ¸¡ã™ã€‚ãµã¤ã†ã¯HARDWARE
+        nullptr,        // ä¸Šè¨˜ã‚’D3D_DRIVER_TYPE_SOFTWAREã«è¨­å®šã—ãªã„ã‹ãã‚Šnullptr
+        0,          // ä½•ã‚‰ã‹ã®ãƒ•ãƒ©ã‚°ã‚’æŒ‡å®šã™ã‚‹ã€‚ï¼ˆãƒ‡ãƒãƒƒã‚°æ™‚ã¯D3D11_CREATE_DEVICE_DEBUGï¼Ÿï¼‰
+        nullptr,        // ãƒ‡ãƒã‚¤ã‚¹ã€ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®ãƒ¬ãƒ™ãƒ«ã‚’è¨­å®šã€‚nullptrã«ã—ã¨ã‘ã°OK
+        0,          // ä¸Šã®å¼•æ•°ã§ãƒ¬ãƒ™ãƒ«ã‚’ä½•å€‹æŒ‡å®šã—ãŸã‹
+        D3D11_SDK_VERSION,      // SDKã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã€‚å¿…ãšã“ã®å€¤
+        &scDesc,        // ä¸Šã§ã„ã‚ã„ã‚è¨­å®šã—ãŸæ§‹é€ ä½“
+        &pSwapChain,        // ç„¡äº‹å®Œæˆã—ãŸSwapChainã®ã‚¢ãƒ‰ãƒ¬ã‚¹ãŒè¿”ã£ã¦ãã‚‹
+        &pDevice,        // ç„¡äº‹å®Œæˆã—ãŸDeviceã‚¢ãƒ‰ãƒ¬ã‚¹ãŒè¿”ã£ã¦ãã‚‹
+        &level,          // ç„¡äº‹å®Œæˆã—ãŸDeviceã€Contextã®ãƒ¬ãƒ™ãƒ«ãŒè¿”ã£ã¦ãã‚‹
+        &pContext);        // ç„¡äº‹å®Œæˆã—ãŸContextã®ã‚¢ãƒ‰ãƒ¬ã‚¹ãŒè¿”ã£ã¦ãã‚‹
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"Device, Swapchain, DeviceContext‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"Device, Swapchain, DeviceContextã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    ///////////////////////////ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[ì¬///////////////////////////////
-    //ƒXƒƒbƒvƒ`ƒF[ƒ“‚©‚çƒoƒbƒNƒoƒbƒtƒ@‚ğæ“¾iƒoƒbƒNƒoƒbƒtƒ@  ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgj
+    ///////////////////////////ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ä½œæˆ///////////////////////////////
+    //ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ãƒ¼ãƒ³ã‹ã‚‰ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã‚’å–å¾—ï¼ˆãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ ï¼ ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆï¼‰
     ID3D11Texture2D* pBackBuffer;
     pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 
-    //ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[‚ğì¬
+    //ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ã‚’ä½œæˆ
     hr = pDevice->CreateRenderTargetView(pBackBuffer, NULL, &pRenderTargetView);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ˆê“I‚ÉƒoƒbƒNƒoƒbƒtƒ@‚ğæ“¾‚µ‚½‚¾‚¯‚È‚Ì‚Å‰ğ•ú
+    //ä¸€æ™‚çš„ã«ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã‚’å–å¾—ã—ãŸã ã‘ãªã®ã§è§£æ”¾
     pBackBuffer->Release();
 
 
-    ///////////////////////////ƒrƒ…[ƒ|[ƒgi•`‰æ”ÍˆÍjİ’è///////////////////////////////
-  //ƒŒƒ“ƒ_ƒŠƒ“ƒOŒ‹‰Ê‚ğ•\¦‚·‚é”ÍˆÍ
+    ///////////////////////////ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆï¼ˆæç”»ç¯„å›²ï¼‰è¨­å®š///////////////////////////////
+  //ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°çµæœã‚’è¡¨ç¤ºã™ã‚‹ç¯„å›²
     D3D11_VIEWPORT vp;
-    vp.Width = (float)winW;  //•
-    vp.Height = (float)winH;//‚‚³
-    vp.MinDepth = 0.0f;  //è‘O
-    vp.MaxDepth = 1.0f;  //‰œ
-    vp.TopLeftX = 0;  //¶
-    vp.TopLeftY = 0;  //ã
+    vp.Width = (float)winW;  //å¹…
+    vp.Height = (float)winH;//é«˜ã•
+    vp.MinDepth = 0.0f;  //æ‰‹å‰
+    vp.MaxDepth = 1.0f;  //å¥¥
+    vp.TopLeftX = 0;  //å·¦
+    vp.TopLeftY = 0;  //ä¸Š
 
-    //[“xƒXƒeƒ“ƒVƒ‹ƒrƒ…[‚Ìì¬
+    //æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
     D3D11_TEXTURE2D_DESC descDepth;
     descDepth.Width = winW;
     descDepth.Height = winH;
@@ -134,16 +134,16 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
     pDevice->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
     pDevice->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
-    //ƒf[ƒ^‚ğ‰æ–Ê‚É•`‰æ‚·‚é‚½‚ß‚Ìˆê’Ê‚è‚Ìİ’èiƒpƒCƒvƒ‰ƒCƒ“j
-    pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // ƒf[ƒ^‚Ì“ü—Íí—Ş‚ğw’è
-    pContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView);            // •`‰ææ‚ğİ’è
+    //ãƒ‡ãƒ¼ã‚¿ã‚’ç”»é¢ã«æç”»ã™ã‚‹ãŸã‚ã®ä¸€é€šã‚Šã®è¨­å®šï¼ˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ï¼‰
+    pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // ãƒ‡ãƒ¼ã‚¿ã®å…¥åŠ›ç¨®é¡ã‚’æŒ‡å®š
+    pContext->OMSetRenderTargets(1, &pRenderTargetView, pDepthStencilView);            // æç”»å…ˆã‚’è¨­å®š
     pContext->RSSetViewports(1, &vp);
 
-    //ƒVƒF[ƒ_[€”õ
+    //ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼æº–å‚™
     hr = InitShader();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒVƒF[ƒ_‚Ì‰Šú‰»‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ã‚·ã‚§ãƒ¼ãƒ€ã®åˆæœŸåŒ–ã«å¤±æ•—", NULL, MB_OK);
     }
 
     WindowSize = { winW,winH };
@@ -152,7 +152,7 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 
 }
 
-//ƒVƒF[ƒ_[€”õ
+//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼æº–å‚™
 HRESULT Direct3D::InitShader()
 {
     if (FAILED(InitShader3D()))
@@ -178,6 +178,9 @@ HRESULT Direct3D::InitShader()
     if (FAILED(InitShaderOutLine())) {
         return E_FAIL;
     }
+    if (FAILED(InitShaderNormal())) {
+        return E_FAIL;
+    }
     return S_OK;
 }
 
@@ -185,7 +188,7 @@ HRESULT Direct3D::InitShader3D()
 {
     HRESULT hr;
 
-    // ’¸“_ƒVƒF[ƒ_‚Ìì¬
+    // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆ
     ID3DBlob* pCompileVS = nullptr;
     D3DCompileFromFile(L"Engine/Simple3D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
     assert(pCompileVS != nullptr);
@@ -193,16 +196,16 @@ HRESULT Direct3D::InitShader3D()
         &shaderBundle[SHADER_TYPE::SHADER_3D].pVertexShader_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ˆÊ’u
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVÀ•W
-      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//–@ü
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
+      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//æ³•ç·š
     };
     hr = pDevice->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
         &shaderBundle[SHADER_TYPE::SHADER_3D].pVertexLayout_);
@@ -210,11 +213,11 @@ HRESULT Direct3D::InitShader3D()
     pCompileVS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     ID3DBlob* pCompilePS = nullptr;
     D3DCompileFromFile(L"Engine/Simple3D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
@@ -223,19 +226,19 @@ HRESULT Direct3D::InitShader3D()
     pCompilePS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ƒ‰ƒXƒ^ƒ‰ƒCƒUì¬
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
     D3D11_RASTERIZER_DESC rdc = {};
-    rdc.CullMode = D3D11_CULL_BACK;  //‘½ŠpŒ`‚Ì— ‘¤‚Í•`‰æ‚µ‚È‚¢iƒJƒŠƒ“ƒOj
-    rdc.FillMode = D3D11_FILL_SOLID; //‘½ŠpŒ`‚Ì“à•”‚ğ“h‚è‚Â‚Ô‚·
-    rdc.FrontCounterClockwise = FALSE; //”½Œv‰ñ‚è‚ğ•\‚É‚·‚é‚©‚Ç‚¤‚©i‚ªfalse‚È‚Ì‚ÅŒv‰ñ‚è‚ª•\j
+    rdc.CullMode = D3D11_CULL_BACK;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
     hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_3D].pRasterizerState_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
@@ -244,7 +247,7 @@ HRESULT Direct3D::InitShader3D()
 
 HRESULT Direct3D::InitShader2D()
 {
-      // ’¸“_ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+      // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     HRESULT hr;
     ID3DBlob* pCompileVS = nullptr;
     D3DCompileFromFile(L"Engine/simple2D.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
@@ -252,26 +255,26 @@ HRESULT Direct3D::InitShader2D()
     hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_TYPE::SHADER_2D].pVertexShader_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ˆÊ’u
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVÀ•W
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
     };
     hr = pDevice->CreateInputLayout(layout, 2, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shaderBundle[SHADER_TYPE::SHADER_2D].pVertexLayout_);
 
     pCompileVS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     ID3DBlob* pCompilePS = nullptr;
     D3DCompileFromFile(L"Engine/simple2D.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
@@ -279,19 +282,19 @@ HRESULT Direct3D::InitShader2D()
     pCompilePS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ƒ‰ƒXƒ^ƒ‰ƒCƒUì¬
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
     D3D11_RASTERIZER_DESC rdc = {};
-    rdc.CullMode =D3D11_CULL_MODE::D3D11_CULL_NONE;  //‘½ŠpŒ`‚Ì— ‘¤‚Í•`‰æ‚µ‚È‚¢iƒJƒŠƒ“ƒOj
-    rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; //‘½ŠpŒ`‚Ì“à•”‚ğ“h‚è‚Â‚Ô‚·
-    rdc.FrontCounterClockwise = FALSE; //”½Œv‰ñ‚è‚ğ•\‚É‚·‚é‚©‚Ç‚¤‚©i‚ªfalse‚È‚Ì‚ÅŒv‰ñ‚è‚ª•\j
+    rdc.CullMode =D3D11_CULL_MODE::D3D11_CULL_NONE;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
     hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_2D].pRasterizerState_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
@@ -302,7 +305,7 @@ HRESULT Direct3D::InitShader2D()
 HRESULT Direct3D::InitShaderCRT()
 {
 
-      // ’¸“_ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+      // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     HRESULT hr;
     ID3DBlob* pCompileVS = nullptr;
     D3DCompileFromFile(L"Engine/CRTRender.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
@@ -310,26 +313,26 @@ HRESULT Direct3D::InitShaderCRT()
     hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL, &shaderBundle[SHADER_TYPE::SHADER_CRT].pVertexShader_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ˆÊ’u
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVÀ•W
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
     };
     hr = pDevice->CreateInputLayout(layout, 2, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), &shaderBundle[SHADER_TYPE::SHADER_CRT].pVertexLayout_);
 
     pCompileVS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     ID3DBlob* pCompilePS = nullptr;
     D3DCompileFromFile(L"Engine/CRTRender.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
@@ -337,19 +340,19 @@ HRESULT Direct3D::InitShaderCRT()
     pCompilePS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ƒ‰ƒXƒ^ƒ‰ƒCƒUì¬
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
     D3D11_RASTERIZER_DESC rdc = {};
-    rdc.CullMode =D3D11_CULL_MODE::D3D11_CULL_NONE;  //‘½ŠpŒ`‚Ì— ‘¤‚Í•`‰æ‚µ‚È‚¢iƒJƒŠƒ“ƒOj
-    rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; //‘½ŠpŒ`‚Ì“à•”‚ğ“h‚è‚Â‚Ô‚·
-    rdc.FrontCounterClockwise = FALSE; //”½Œv‰ñ‚è‚ğ•\‚É‚·‚é‚©‚Ç‚¤‚©i‚ªfalse‚È‚Ì‚ÅŒv‰ñ‚è‚ª•\j
+    rdc.CullMode =D3D11_CULL_MODE::D3D11_CULL_NONE;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
     hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_CRT].pRasterizerState_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
@@ -361,7 +364,7 @@ HRESULT Direct3D::InitPointLightShader()
 {
     HRESULT hr;
 
-    // ’¸“_ƒVƒF[ƒ_‚Ìì¬
+    // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆ
     ID3DBlob* pCompileVS = nullptr;
     D3DCompileFromFile(L"Engine/PointLightShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
     assert(pCompileVS != nullptr);
@@ -369,16 +372,16 @@ HRESULT Direct3D::InitPointLightShader()
         &shaderBundle[SHADER_TYPE::SHADER_POINT].pVertexShader_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ˆÊ’u
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVÀ•W
-      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//–@ü
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
+      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//æ³•ç·š
     };
     hr = pDevice->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
         &shaderBundle[SHADER_TYPE::SHADER_POINT].pVertexLayout_);
@@ -386,11 +389,11 @@ HRESULT Direct3D::InitPointLightShader()
     pCompileVS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     ID3DBlob* pCompilePS = nullptr;
     D3DCompileFromFile(L"Engine/PointLightShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
@@ -399,19 +402,19 @@ HRESULT Direct3D::InitPointLightShader()
     pCompilePS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ƒ‰ƒXƒ^ƒ‰ƒCƒUì¬
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
     D3D11_RASTERIZER_DESC rdc = {};
-    rdc.CullMode = D3D11_CULL_BACK;  //‘½ŠpŒ`‚Ì— ‘¤‚Í•`‰æ‚µ‚È‚¢iƒJƒŠƒ“ƒOj
-    rdc.FillMode = D3D11_FILL_SOLID; //‘½ŠpŒ`‚Ì“à•”‚ğ“h‚è‚Â‚Ô‚·
-    rdc.FrontCounterClockwise = FALSE; //”½Œv‰ñ‚è‚ğ•\‚É‚·‚é‚©‚Ç‚¤‚©i‚ªfalse‚È‚Ì‚ÅŒv‰ñ‚è‚ª•\j
+    rdc.CullMode = D3D11_CULL_BACK;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
     hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_POINT].pRasterizerState_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
@@ -422,7 +425,7 @@ HRESULT Direct3D::InitShaderToon()
 {
     HRESULT hr;
 
-    // ’¸“_ƒVƒF[ƒ_‚Ìì¬
+    // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆ
     ID3DBlob* pCompileVS = nullptr;
     D3DCompileFromFile(L"Engine/ToonShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
     assert(pCompileVS != nullptr);
@@ -430,16 +433,16 @@ HRESULT Direct3D::InitShaderToon()
         &shaderBundle[SHADER_TYPE::SHADER_TOON].pVertexShader_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ˆÊ’u
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVÀ•W
-      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//–@ü
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
+      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//æ³•ç·š
     };
     hr = pDevice->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
         &shaderBundle[SHADER_TYPE::SHADER_TOON].pVertexLayout_);
@@ -447,11 +450,11 @@ HRESULT Direct3D::InitShaderToon()
     pCompileVS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     ID3DBlob* pCompilePS = nullptr;
     D3DCompileFromFile(L"Engine/ToonShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
@@ -460,19 +463,19 @@ HRESULT Direct3D::InitShaderToon()
     pCompilePS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ƒ‰ƒXƒ^ƒ‰ƒCƒUì¬
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
     D3D11_RASTERIZER_DESC rdc = {};
-    rdc.CullMode = D3D11_CULL_BACK;  //‘½ŠpŒ`‚Ì— ‘¤‚Í•`‰æ‚µ‚È‚¢iƒJƒŠƒ“ƒOj
-    rdc.FillMode = D3D11_FILL_SOLID; //‘½ŠpŒ`‚Ì“à•”‚ğ“h‚è‚Â‚Ô‚·
-    rdc.FrontCounterClockwise = FALSE; //”½Œv‰ñ‚è‚ğ•\‚É‚·‚é‚©‚Ç‚¤‚©i‚ªfalse‚È‚Ì‚ÅŒv‰ñ‚è‚ª•\j
+    rdc.CullMode = D3D11_CULL_BACK;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
     hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_TOON].pRasterizerState_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
@@ -483,7 +486,7 @@ HRESULT Direct3D::InitShaderOutLine()
 {
     HRESULT hr;
 
-    // ’¸“_ƒVƒF[ƒ_‚Ìì¬
+    // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆ
     ID3DBlob* pCompileVS = nullptr;
     D3DCompileFromFile(L"Engine/OutLineShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
     assert(pCompileVS != nullptr);
@@ -491,16 +494,16 @@ HRESULT Direct3D::InitShaderOutLine()
         &shaderBundle[SHADER_TYPE::SHADER_OUTLINE].pVertexShader_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ˆÊ’u
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVÀ•W
-      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//–@ü
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
+      { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//æ³•ç·š
     };
     hr = pDevice->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
         &shaderBundle[SHADER_TYPE::SHADER_OUTLINE].pVertexLayout_);
@@ -508,11 +511,11 @@ HRESULT Direct3D::InitShaderOutLine()
     pCompileVS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    // ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬iƒRƒ“ƒpƒCƒ‹j
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
     ID3DBlob* pCompilePS = nullptr;
     D3DCompileFromFile(L"Engine/OutLineShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
@@ -521,19 +524,80 @@ HRESULT Direct3D::InitShaderOutLine()
     pCompilePS->Release();
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
-    //ƒ‰ƒXƒ^ƒ‰ƒCƒUì¬
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
     D3D11_RASTERIZER_DESC rdc = {};
-    rdc.CullMode = D3D11_CULL_FRONT;  //‘½ŠpŒ`‚Ì— ‘¤‚Í•`‰æ‚µ‚È‚¢iƒJƒŠƒ“ƒOj
-    rdc.FillMode = D3D11_FILL_SOLID; //‘½ŠpŒ`‚Ì“à•”‚ğ“h‚è‚Â‚Ô‚·
-    rdc.FrontCounterClockwise = FALSE; //”½Œv‰ñ‚è‚ğ•\‚É‚·‚é‚©‚Ç‚¤‚©i‚ªfalse‚È‚Ì‚ÅŒv‰ñ‚è‚ª•\j
+    rdc.CullMode = D3D11_CULL_FRONT;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
     hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_OUTLINE].pRasterizerState_);
     if (FAILED(hr))
     {
-        MessageBox(NULL, L"ƒ‰ƒXƒ^ƒ‰ƒCƒUƒXƒe[ƒg‚Ìì¬‚É¸”s", NULL, MB_OK);
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
+        return hr;
+    }
+
+    return S_OK;
+}
+
+HRESULT Direct3D::InitShaderNormal()
+{
+    HRESULT hr;
+
+    // é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆ
+    ID3DBlob* pCompileVS = nullptr;
+    D3DCompileFromFile(L"Engine/normalmappingShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+    assert(pCompileVS != nullptr);
+    hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL,
+        &shaderBundle[SHADER_TYPE::SHADER_NORMALMAP].pVertexShader_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
+        return hr;
+    }
+    //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+    D3D11_INPUT_ELEMENT_DESC layout[] =
+    {
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 0 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //ä½ç½®
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, sizeof(DirectX::XMVECTOR) * 1 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//UVåº§æ¨™
+      { "NORMAL"  , 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//æ³•ç·š
+      { "TANGENT" , 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 3 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//æ³•ç·š
+    };
+    hr = pDevice->CreateInputLayout(layout, ARRAYSIZE(layout), pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
+        &shaderBundle[SHADER_TYPE::SHADER_NORMALMAP].pVertexLayout_);
+
+    pCompileVS->Release();
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
+        return hr;
+    }
+
+    // ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆï¼ˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼‰
+    ID3DBlob* pCompilePS = nullptr;
+    D3DCompileFromFile(L"Engine/normalmappingShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+    assert(pCompileVS != nullptr);
+    hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL,
+        &shaderBundle[SHADER_TYPE::SHADER_NORMALMAP].pPixelShader_);
+    pCompilePS->Release();
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
+        return hr;
+    }
+
+    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ä½œæˆ
+    D3D11_RASTERIZER_DESC rdc = {};
+    rdc.CullMode = D3D11_CULL_BACK;  //å¤šè§’å½¢ã®è£å´ã¯æç”»ã—ãªã„ï¼ˆã‚«ãƒªãƒ³ã‚°ï¼‰
+    rdc.FillMode = D3D11_FILL_SOLID; //å¤šè§’å½¢ã®å†…éƒ¨ã‚’å¡—ã‚Šã¤ã¶ã™
+    rdc.FrontCounterClockwise = FALSE; //åæ™‚è¨ˆå›ã‚Šã‚’è¡¨ã«ã™ã‚‹ã‹ã©ã†ã‹ï¼ˆãŒfalseãªã®ã§æ™‚è¨ˆå›ã‚ŠãŒè¡¨ï¼‰
+    hr = pDevice->CreateRasterizerState(&rdc, &shaderBundle[SHADER_TYPE::SHADER_NORMALMAP].pRasterizerState_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ã‚¹ãƒ†ãƒ¼ãƒˆã®ä½œæˆã«å¤±æ•—", NULL, MB_OK);
         return hr;
     }
 
@@ -542,23 +606,23 @@ HRESULT Direct3D::InitShaderOutLine()
 
 void Direct3D::SetShader(SHADER_TYPE type)
 {
-    //‚»‚ê‚¼‚ê‚ğƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚ÉƒZƒbƒg
-    pContext->VSSetShader(shaderBundle[type].pVertexShader_, NULL, 0);  //’¸“_ƒVƒF[ƒ_[
-    pContext->PSSetShader(shaderBundle[type].pPixelShader_, NULL, 0);  //ƒsƒNƒZƒ‹ƒVƒF[ƒ_[
-    pContext->IASetInputLayout(shaderBundle[type].pVertexLayout_);  //’¸“_ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg
-    pContext->RSSetState(shaderBundle[type].pRasterizerState_);    //ƒ‰ƒXƒ^ƒ‰ƒCƒU[
+    //ãã‚Œãã‚Œã‚’ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã«ã‚»ãƒƒãƒˆ
+    pContext->VSSetShader(shaderBundle[type].pVertexShader_, NULL, 0);  //é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+    pContext->PSSetShader(shaderBundle[type].pPixelShader_, NULL, 0);  //ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+    pContext->IASetInputLayout(shaderBundle[type].pVertexLayout_);  //é ‚ç‚¹ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+    pContext->RSSetState(shaderBundle[type].pRasterizerState_);    //ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ãƒ¼
 }
 
-//•`‰æŠJn
+//æç”»é–‹å§‹
 void Direct3D::BeginDraw()
 {
-    //”wŒi‚ÌF
+    //èƒŒæ™¯ã®è‰²
     float clearColor[4] = { 255 / 255.0f, 250 / 255.0f, 205 / 255.0f, 1.0f };//R,G,B,A
 
-    //‰æ–Ê‚ğƒNƒŠƒA
+    //ç”»é¢ã‚’ã‚¯ãƒªã‚¢
     pContext->ClearRenderTargetView(pRenderTargetView, clearColor);
 
-    //[“xƒoƒbƒtƒ@ƒNƒŠƒA
+    //æ·±åº¦ãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢
     pContext->ClearDepthStencilView(pDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
     ImGui_ImplDX11_NewFrame();
@@ -566,7 +630,7 @@ void Direct3D::BeginDraw()
     ImGui::NewFrame();
 }
 
-//•`‰æI—¹
+//æç”»çµ‚äº†
 HRESULT Direct3D::EndDraw()
 {
 
@@ -579,14 +643,14 @@ HRESULT Direct3D::EndDraw()
 
 
 
-//‰ğ•úˆ—
+//è§£æ”¾å‡¦ç†
 void Direct3D::Release()
 {
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    //‰ğ•úˆ—
+    //è§£æ”¾å‡¦ç†
     SAFE_RELEASE(pRasterizerState);
     SAFE_RELEASE(pVertexLayout);
     SAFE_RELEASE(pPixelShader);
@@ -606,3 +670,4 @@ DirectX::XMFLOAT4 Direct3D::GetGlovalLightVec()
 {
     return G_LightVec;
 }
+

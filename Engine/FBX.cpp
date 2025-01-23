@@ -280,10 +280,12 @@ void FBX::Draw(Transform& transform)
 			cb.shininess = pMaterialList_[i].shininess;
 			cb.diffuseColor = pMaterialList_[i].diffuse;
 			cb.diffuseFactor = pMaterialList_[i].factor;
-			if (pMaterialList_[i].pTexture == nullptr)
-				cb.isTextured = false;
-			else
-				cb.isTextured = true;
+			int val = (int(pMaterialList_[i].pTexture));
+			cb.isTextured = { val,val,val,val };
+			//if (pMaterialList_[i].pTexture == nullptr)
+			//	cb.isTextured = false;
+			//else
+			//	cb.isTextured = true;
 
 
 			D3D11_MAPPED_SUBRESOURCE pdata;
