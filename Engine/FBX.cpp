@@ -69,7 +69,10 @@ void FBX::InitVertex(fbxsdk::FbxMesh* mesh)
 {
 	//頂点情報を入れる配列
 	vertices_ = std::vector<VERTEX>(vertexCount_);
-	//std::vector<VERTEX> vertices(vertexCount_);
+	//メッシュに含まれるタンジェント情報を取得
+	//int nNum=mesh->GetElementNormalCount();
+	//int tNum = mesh->GetElementTangentCount();
+
 	//全ポリゴン
 	for (DWORD poly = 0; poly < polygonCount_; poly++)
 	{
@@ -89,12 +92,33 @@ void FBX::InitVertex(fbxsdk::FbxMesh* mesh)
 			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
 			vertices_[index].uv = XMVectorSet((float)(uv.mData[0]), (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
 
+			FbxLayerElementNormal* leNormal = mesh->GetLayer(0)->GetNormals();
+			FbxLayerElement::EMappingMode mp = leNormal->GetMappingMode();
+
 			//頂点の法線
-			FbxVector4 Normal;
-			mesh->GetPolygonVertexNormal(poly, vertex, Normal);	//ｉ番目のポリゴンの、ｊ番目の頂点の法線をゲット
+			//FbxVector4 Normal;
+			//mesh->GetPolygonVertexNormal(poly, vertex, Normal);	//ｉ番目のポリゴンの、ｊ番目の頂点の法線をゲット
+			FbxVector4 Normal = leNormal->GetDirectArray().GetAt(index);
 			vertices_[index].normal = XMVectorSet((float)Normal[0], (float)Normal[1], -(float)Normal[2], 0.0f);
 		}
 	}
+
+	//タンジェント情報の取得
+	FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
+	for (DWORD poly = 0; poly < polygonCount_; poly++) {
+		FbxVector4 tangent{ 0,0,0,0 };
+		int index = mesh->GetPolygonVertexIndex(poly);
+
+		if (t != nullptr) {
+			tangent = t->GetDirectArray().GetAt(index).mData;
+		}
+		for (int i= 0; i < 3; i++) {
+			int rIndext = mesh->GetPolygonVertices()[index + i];
+			vertices_[rIndext].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f);
+		}
+	}
+
+	//タンジェント情報の取得
 
 	//頂点バッファ
 	HRESULT hr;
@@ -202,8 +226,9 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 			const char* textureFilePath = textureInfo->GetRelativeFileName();
 			//パス
 			fs::path texFile(textureFilePath);
+			fs::path filename = texFile.filename();
 			pMaterialList_[i].pTexture = new Texture;
-			pMaterialList_[i].pTexture->Load(texFile.string());
+			pMaterialList_[i].pTexture->Load(filename.string());
 			
 			FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 			FbxDouble diffuse = pMaterial->DiffuseFactor;
@@ -254,7 +279,31 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 				pMaterialList_[i].shininess = { 10.0f,10.0f,10.0f,1.0f };
 			}
 		}
+		{
+			//ノーマルテクスチャの読み込み関連
 
+			FbxProperty lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
+			int texCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+			if (texCount > 0) {
+				FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+				const char* textureFilePath = textureInfo->GetRelativeFileName();
+				//パス
+				fs::path texFile(textureFilePath);
+				fs::path filename = texFile.filename();
+				if (fs::is_regular_file(filename)) {
+					pMaterialList_[i].pNormalMap = new Texture;
+					HRESULT hr = pMaterialList_[i].pNormalMap->Load(filename.string());
+					assert(hr == S_OK);
+				}
+			}
+			else
+			{
+				pMaterialList_[i].pNormalMap = nullptr;
+			}
+
+			//ノーマルテクスチャの読み込み関連
+		}
 	}
 }
 
@@ -262,7 +311,7 @@ void FBX::InitMaterial(fbxsdk::FbxNode* pNode)
 
 void FBX::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_OUTLINE);
+	Direct3D::SetShader(SHADER_NORMALMAP);
 	transform.Calculation();
 
 	for (int j = 0; j < 2; j++) {
@@ -287,6 +336,8 @@ void FBX::Draw(Transform& transform)
 			//else
 			//	cb.isTextured = true;
 
+			int nVal = (int)(pMaterialList_[i].pNormalMap != nullptr);
+			cb.isNormalMapped = { nVal,nVal,nVal,nVal };
 
 			D3D11_MAPPED_SUBRESOURCE pdata;
 			Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
@@ -321,6 +372,16 @@ void FBX::Draw(Transform& transform)
 
 			}
 
+			if (pMaterialList_[i].pNormalMap) {
+				//サンプラーとシェーダーリソースビューをシェーダにセット
+				ID3D11SamplerState* pSampler = pMaterialList_[i].pNormalMap->GetSampler();
+				Direct3D::pContext->PSSetSamplers(1, 1, &pSampler);
+
+				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalMap->GetSRV();
+				Direct3D::pContext->PSSetShaderResources(1, 1, &pSRV);
+
+			}
+
 			ID3D11SamplerState* pSampler = pToonTex_->GetSampler();
 			ID3D11ShaderResourceView* pSRV = pToonTex_->GetSRV();
 			Direct3D::pContext->PSSetSamplers(1, 1, &pSampler);
@@ -329,7 +390,7 @@ void FBX::Draw(Transform& transform)
 			//描画
 			Direct3D::pContext->DrawIndexed(indexcount[i], 0, 0);
 		}
-		Direct3D::SetShader(SHADER_TOON);
+		//Direct3D::SetShader(SHADER_TOON);
 	}
 }
 

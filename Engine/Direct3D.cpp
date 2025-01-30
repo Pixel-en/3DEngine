@@ -549,7 +549,7 @@ HRESULT Direct3D::InitShaderNormal()
 
     // 頂点シェーダの作成
     ID3DBlob* pCompileVS = nullptr;
-    D3DCompileFromFile(L"Engine/normalmappingShader.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
+    D3DCompileFromFile(L"Engine/normalmapping.hlsl", nullptr, nullptr, "VS", "vs_5_0", NULL, 0, &pCompileVS, NULL);
     assert(pCompileVS != nullptr);
     hr = pDevice->CreateVertexShader(pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(), NULL,
         &shaderBundle[SHADER_TYPE::SHADER_NORMALMAP].pVertexShader_);
@@ -578,7 +578,7 @@ HRESULT Direct3D::InitShaderNormal()
 
     // ピクセルシェーダの作成（コンパイル）
     ID3DBlob* pCompilePS = nullptr;
-    D3DCompileFromFile(L"Engine/normalmappingShader.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
+    D3DCompileFromFile(L"Engine/normalmapping.hlsl", nullptr, nullptr, "PS", "ps_5_0", NULL, 0, &pCompilePS, NULL);
     assert(pCompileVS != nullptr);
     hr = pDevice->CreatePixelShader(pCompilePS->GetBufferPointer(), pCompilePS->GetBufferSize(), NULL,
         &shaderBundle[SHADER_TYPE::SHADER_NORMALMAP].pPixelShader_);

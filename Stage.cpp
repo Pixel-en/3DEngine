@@ -40,10 +40,10 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	hModel_[0] = Model::Load("Assets\\Torus_TP.fbx");
-	hModel_[1] = Model::Load("Assets\\Torus_TL.fbx");
-	hModel_[2] = Model::Load("Assets\\Torus_P.fbx");
-	hModel_[3] = Model::Load("Assets\\Torus_L.fbx");
+	hModel_[0] = Model::Load("Assets\\Knife.fbx");
+	//hModel_[1] = Model::Load("Assets\\Torus_TL.fbx");
+	//hModel_[2] = Model::Load("Assets\\Torus_P.fbx");
+	//hModel_[3] = Model::Load("Assets\\Torus_L.fbx");
 
 	hlightmodel = Model::Load("Assets\\Sphere.fbx");
 
@@ -56,6 +56,7 @@ void Stage::Initialize()
 	trans[2].position_.x += 2;
 	trans[3].position_.x += 5;
 
+	trans[0].scale_ = { 3,3,3 };
 	this->InitConstantBuffer();
 }
 
@@ -96,14 +97,16 @@ void Stage::Update()
 
 void Stage::Draw()
 {
-	for (int i = 0; i < 4; i++) {
-		if (isRotate_) {
-			trans[i].rotate_.y += 0.05f;
-		}
+	//for (int i = 0; i < 4; i++) {
+	//	if (isRotate_) {
+	//		trans[i].rotate_.y += 0.05f;
+	//	}
 
-		Model::SetTransform(hModel_[i], trans[i]);
-		Model::Draw(hModel_[i]);
-	}
+	//	Model::SetTransform(hModel_[i], trans[i]);
+	//	Model::Draw(hModel_[i]);
+	//}
+	Model::SetTransform(hModel_[0], trans[0]);
+	Model::Draw(hModel_[0]);
 
 	Model::SetTransform(hlightmodel, lightpos);
 	Model::Draw(hlightmodel);

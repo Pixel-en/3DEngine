@@ -41,6 +41,7 @@ class FBX
 		XMFLOAT4    specularColor;
 		XMFLOAT4	shininess;
 		XMINT4		isTextured;	//テクスチャが貼ってあるかどうか
+		XMINT4		isNormalMapped;
 	};
 
 	//頂点情報
