@@ -49,7 +49,7 @@ void Stage::Initialize()
 
 	for (int i = 0; i < 4; i++) {
 		trans[i] = transform_;
-		trans[i].position_.z -= 3;
+		trans[i].position_.z -= 7;
 	}
 	trans[0].position_.x -= 1;
 

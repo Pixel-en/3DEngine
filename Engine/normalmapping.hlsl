@@ -118,7 +118,7 @@ float4 PS(VS_OUT inData) : SV_Target
     //float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //ŠÂ‹«Œõ‚Ì‹­‚³
     
     //float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-    float4 ambientSource = float4(0.5, 0.5, 0.5, 0.5);
+    float4 ambientSource = float4(0.7, 0.7, 0.7, 0.7);
     float4 diffuse;
     float4 ambient;
     
