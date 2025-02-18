@@ -49,14 +49,16 @@ void Stage::Initialize()
 
 	for (int i = 0; i < 4; i++) {
 		trans[i] = transform_;
-		trans[i].position_.z += 2;
+		trans[i].position_.z -= 3;
 	}
-	trans[0].position_.x -= 5;
-	trans[1].position_.x -= 2;
-	trans[2].position_.x += 2;
-	trans[3].position_.x += 5;
+	trans[0].position_.x -= 1;
+
+	//trans[1].position_.x -= 2;
+	//trans[2].position_.x += 2;
+	//trans[3].position_.x += 5;
 
 	trans[0].scale_ = { 3,3,3 };
+	trans[0].rotate_.y = 80;
 	this->InitConstantBuffer();
 }
 

@@ -33,6 +33,8 @@ HRESULT FBX::Load(std::string fileName)
 	FbxNode* pNode = rootNode->GetChild(0);
 	FbxMesh* mesh = pNode->GetMesh();
 
+	mesh->SplitPoints(FbxLayerElement::eTextureDiffuse);
+
 	//Šeî•ñ‚ÌŒÂ”‚ðŽæ“¾
 	vertexCount_ = mesh->GetControlPointsCount();
 	polygonCount_ = mesh->GetPolygonCount();
@@ -91,6 +93,24 @@ void FBX::InitVertex(fbxsdk::FbxMesh* mesh)
 			int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
 			FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
 			vertices_[index].uv = XMVectorSet((float)(uv.mData[0]), (float)(1.0f - uv.mData[1]), 0.0f, 0.0f);
+
+
+			if (pUV->GetReferenceMode() == FbxLayerElement::eIndexToDirect) {
+				int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
+				FbxVector2  uv = pUV->GetDirectArray().GetAt(uvIndex);
+				vertices_[index].uv = XMVectorSet((float)uv.mData[0], (float)(1.0 - uv.mData[1]), 0.0f, 0.0f);
+			}
+			else if (pUV->GetReferenceMode() == FbxLayerElement::eDirect) {
+				FbxVector2 vUV;
+				bool res = true;
+				FbxStringList sUVSetNames;
+				mesh->GetUVSetNames(sUVSetNames);
+				FbxString sUVSetName = sUVSetNames.GetStringAt(0);
+				mesh->GetPolygonVertexUV(poly, vertex, sUVSetName, vUV, res);
+				int uvIndex = mesh->GetTextureUVIndex(poly, vertex, FbxLayerElement::eTextureDiffuse);
+				vertices_[index].uv = XMVectorSet((float)vUV[0], (float)(1.0 - vUV[1]), 0.0f, 0.0f);
+			}
+
 
 			FbxLayerElementNormal* leNormal = mesh->GetLayer(0)->GetNormals();
 			FbxLayerElement::EMappingMode mp = leNormal->GetMappingMode();

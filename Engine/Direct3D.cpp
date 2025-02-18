@@ -443,6 +443,7 @@ HRESULT Direct3D::InitShaderToon()
       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0 },  //位置
       { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::XMVECTOR) , D3D11_INPUT_PER_VERTEX_DATA, 0 },//UV座標
       { "NORMAL",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 2 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//法線
+      { "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(DirectX::XMVECTOR) * 3 ,  D3D11_INPUT_PER_VERTEX_DATA, 0 },//法線
     };
     hr = pDevice->CreateInputLayout(layout, 3, pCompileVS->GetBufferPointer(), pCompileVS->GetBufferSize(),
         &shaderBundle[SHADER_TYPE::SHADER_TOON].pVertexLayout_);
