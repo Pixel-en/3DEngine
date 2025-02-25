@@ -40,83 +40,87 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	hModel_[0] = Model::Load("Assets\\Knife.fbx");
-	//hModel_[1] = Model::Load("Assets\\Torus_TL.fbx");
-	//hModel_[2] = Model::Load("Assets\\Torus_P.fbx");
-	//hModel_[3] = Model::Load("Assets\\Torus_L.fbx");
+	//hModel_[0] = Model::Load("Assets\\Knife.fbx");
+	////hModel_[1] = Model::Load("Assets\\Torus_TL.fbx");
+	////hModel_[2] = Model::Load("Assets\\Torus_P.fbx");
+	////hModel_[3] = Model::Load("Assets\\Torus_L.fbx");
 
-	hlightmodel = Model::Load("Assets\\Sphere.fbx");
+	//hlightmodel = Model::Load("Assets\\Sphere.fbx");
 
-	for (int i = 0; i < 4; i++) {
-		trans[i] = transform_;
-		trans[i].position_.z -= 7;
-	}
-	trans[0].position_.x -= 1;
+	//for (int i = 0; i < 4; i++) {
+	//	trans[i] = transform_;
+	//	trans[i].position_.z -= 7;
+	//}
+	//trans[0].position_.x -= 1;
 
-	//trans[1].position_.x -= 2;
-	//trans[2].position_.x += 2;
-	//trans[3].position_.x += 5;
+	////trans[1].position_.x -= 2;
+	////trans[2].position_.x += 2;
+	////trans[3].position_.x += 5;
 
-	trans[0].scale_ = { 3,3,3 };
-	trans[0].rotate_.y = 80;
-	this->InitConstantBuffer();
+	//trans[0].scale_ = { 3,3,3 };
+	//trans[0].rotate_.y = 80;
+	//this->InitConstantBuffer();
+	hImage_ = new Sprite();
+	hImage_->Load("Assets\\dice.png");
+
 }
 
 void Stage::Update()
 {
-	transform_.rotate_.y += 0.5f;
+	//transform_.rotate_.y += 0.5f;
 
-	if (Input::IsKey(DIK_LEFT))
-		lightpos.position_.x -= 0.1f;
-	if (Input::IsKey(DIK_RIGHT))
-		lightpos.position_.x += 0.1f;
-	if (Input::IsKey(DIK_UP))
-		lightpos.position_.z += 0.1f;
-	if (Input::IsKey(DIK_DOWN))
-		lightpos.position_.z -= 0.1f;
-	if (Input::IsKey(DIK_W))
-		lightpos.position_.y += 0.1f;
-	if (Input::IsKey(DIK_S))
-		lightpos.position_.y -= 0.1f;
-	XMFLOAT4 temp = { lightpos.position_.x,lightpos.position_.y,lightpos.position_.z,Direct3D::GetGlovalLightVec().w };
-	Direct3D::SetGlobalLightVec(temp);
+	//if (Input::IsKey(DIK_LEFT))
+	//	lightpos.position_.x -= 0.1f;
+	//if (Input::IsKey(DIK_RIGHT))
+	//	lightpos.position_.x += 0.1f;
+	//if (Input::IsKey(DIK_UP))
+	//	lightpos.position_.z += 0.1f;
+	//if (Input::IsKey(DIK_DOWN))
+	//	lightpos.position_.z -= 0.1f;
+	//if (Input::IsKey(DIK_W))
+	//	lightpos.position_.y += 0.1f;
+	//if (Input::IsKey(DIK_S))
+	//	lightpos.position_.y -= 0.1f;
+	//XMFLOAT4 temp = { lightpos.position_.x,lightpos.position_.y,lightpos.position_.z,Direct3D::GetGlovalLightVec().w };
+	//Direct3D::SetGlobalLightVec(temp);
 
-	//コンスタントバッファの設定と、シェーダーへのコンスタントバッファのセットを書く
-	CONSTBUFFER_STAGE cb;
-	cb.lightPosition = Direct3D::GetGlovalLightVec();
-	XMStoreFloat4(&cb.eyePosition, Camera::GetPosition());
+	////コンスタントバッファの設定と、シェーダーへのコンスタントバッファのセットを書く
+	//CONSTBUFFER_STAGE cb;
+	//cb.lightPosition = Direct3D::GetGlovalLightVec();
+	//XMStoreFloat4(&cb.eyePosition, Camera::GetPosition());
 
-	D3D11_MAPPED_SUBRESOURCE pdata;
-	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+	//D3D11_MAPPED_SUBRESOURCE pdata;
+	//Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+	//memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
 
-	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
+	//Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
 
-	Direct3D::pContext->VSSetConstantBuffers(1, 1, &pConstantBuffer_);	//頂点シェーダー用	
-	Direct3D::pContext->PSSetConstantBuffers(1, 1, &pConstantBuffer_);	//ピクセルシェーダー用
+	//Direct3D::pContext->VSSetConstantBuffers(1, 1, &pConstantBuffer_);	//頂点シェーダー用	
+	//Direct3D::pContext->PSSetConstantBuffers(1, 1, &pConstantBuffer_);	//ピクセルシェーダー用
 
 }
 
 void Stage::Draw()
 {
-	//for (int i = 0; i < 4; i++) {
-	//	if (isRotate_) {
-	//		trans[i].rotate_.y += 0.05f;
-	//	}
+	////for (int i = 0; i < 4; i++) {
+	////	if (isRotate_) {
+	////		trans[i].rotate_.y += 0.05f;
+	////	}
 
-	//	Model::SetTransform(hModel_[i], trans[i]);
-	//	Model::Draw(hModel_[i]);
+	////	Model::SetTransform(hModel_[i], trans[i]);
+	////	Model::Draw(hModel_[i]);
+	////}
+	//Model::SetTransform(hModel_[0], trans[0]);
+	//Model::Draw(hModel_[0]);
+
+	//Model::SetTransform(hlightmodel, lightpos);
+	//Model::Draw(hlightmodel);
+
+	//{
+	//	//ImGUIを出す
+
 	//}
-	Model::SetTransform(hModel_[0], trans[0]);
-	Model::Draw(hModel_[0]);
-
-	Model::SetTransform(hlightmodel, lightpos);
-	Model::Draw(hlightmodel);
-
-	{
-		//ImGUIを出す
-
-	}
+	hImage_->Draw(transform_);
 }
 
 void Stage::Release()

@@ -13,6 +13,9 @@ struct CONSTANT_BUFFER2D
 	XMMATRIX	matW;
 
 	XMINT2 winSize;
+
+	XMMATRIX uvTrans;	//テクスチャ座標の変換座標
+	XMFLOAT4 bcolor;	//テクスチャとの合成色
 };
 
 //頂点情報
@@ -36,14 +39,18 @@ private:
 	uint64_t indexNum_;			//インデックス数
 	vector<int> indices_;		//インデックス情報
 
+	std::string filename_;
+
 public:
 
 	Sprite();
+	Sprite(std::string fileName);
 	~Sprite();
 	HRESULT Load(std::string fileName);
 	void Draw(Transform& transform);
+	void Draw(Transform& transform, RECT rect, float alpha);
 	void Release();
-
+	XMFLOAT2 GetTextureSize() { return pTexture_->GetTextureSize(); }
 private:
 
 	//--------Initialize関数から呼ばれる関数--------

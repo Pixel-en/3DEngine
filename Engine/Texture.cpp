@@ -27,7 +27,7 @@ HRESULT Texture::Load(string fileName)
 
 	std::wstring wstr(fileName.begin(), fileName.end());	//string->wchar_t*@ LPCWSTR == cont wchar_t*
 	hr = LoadFromWICFile(wstr.c_str(), WIC_FLAGS::WIC_FLAGS_NONE, &metadata, image);
-
+	imgSize_ = { (float)image.GetImages()->width,(float)image.GetImages()->height };
 	if (FAILED(hr))
 	{
 		return S_FALSE;

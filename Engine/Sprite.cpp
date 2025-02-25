@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include <filesystem>
 
+namespace fs = std::filesystem;
 
 Sprite::Sprite()
 {
@@ -13,7 +14,20 @@ Sprite::Sprite()
 
 	vertexNum_ = 0;
 	indexNum_ = 0;
+	filename_ = "";
+}
 
+Sprite::Sprite(std::string fileName)
+{
+	pVertexBuffer_ = nullptr;
+	pIndexBuffer_ = nullptr;
+	pConstantBuffer_ = nullptr;
+
+	pTexture_ = nullptr;
+
+	vertexNum_ = 0;
+	indexNum_ = 0;
+	filename_ = fileName;
 }
 
 Sprite::~Sprite()
@@ -61,6 +75,38 @@ void Sprite::Draw(Transform& transform)
 
 
 	Direct3D::pContext->DrawIndexed(indexNum_, 0, 0);
+}
+
+void Sprite::Draw(Transform& transform, RECT rect, float alpha)
+{
+	//頂点バッファ
+	UINT stride = sizeof(VERTEX2D);
+	UINT offset = 0;
+	Direct3D::pContext->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
+	// インデックスバッファーをセット
+	stride = sizeof(int);
+	offset = 0;
+	Direct3D::pContext->IASetIndexBuffer(pIndexBuffer_, DXGI_FORMAT_R32_UINT, 0);
+
+	//コンスタントバッファ
+	Direct3D::pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer_);	//頂点シェーダー用	
+	Direct3D::pContext->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
+	//Direct3D::SetDepthBufferWriteEnable(false);	//デプスバッファのオンオフ切り替え
+
+	CONSTANT_BUFFER2D cb;
+	D3D11_MAPPED_SUBRESOURCE pdata;
+
+	XMMATRIX cut = XMMatrixScaling((float)rect.right, (float)rect.bottom, 1);
+	//XMMATRIX view = XMMatrixScaling(1.0f / スクリーンwidth, 1.0f / スクリーンheight, 1);
+
+	//XMMATRIX world = cut * transform.matScale_ * transform.matRotate_ * view * trnasform.matTranslate_;
+
+	//サンプラーとシェーダーリソースビューをシェーダにセット
+	//ID3D11SamplerState* pSampler = pTexture_->GetSampler();
+	//Direct3D::pContext->PSSetSamplers(0, 1, &pSampler);
+
+	//ID3D11ShaderResourceView* pSRV = pTexture_->GetSRV();
+	//Direct3D::pContext->PSSetShaderResources(0, 1, &pSRV);
 }
 
 void Sprite::Release()
@@ -164,7 +210,6 @@ HRESULT Sprite::CreateConstantBuffer()
 
 HRESULT Sprite::LoadTexture(std::string fileName)
 {
-	namespace fs = std::filesystem;
 
 	pTexture_ = new Texture;
 	assert(fs::is_regular_file(fileName));

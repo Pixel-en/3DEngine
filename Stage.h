@@ -1,5 +1,7 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Engine/Sprite.h"
+
 #include <d3d11.h>
 
 struct CONSTBUFFER_STAGE {
@@ -14,6 +16,7 @@ class Stage:public GameObject
 	Transform trans[4];
 	Transform lightpos;
 	bool isRotate_;
+	Sprite* hImage_;
 
 	ID3D11Buffer* pConstantBuffer_;	//コンスタントバッファ
 	void InitConstantBuffer();
