@@ -80,8 +80,10 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
     tangent.w = 0;
     tangent = normalize(tangent);
 	
+    //視線ベクトル
     float4 posw = mul(pos, matW);
-    outData.eyev = normalize(posw - eyePosition);
+    outData.eyev = float4(normalize(eyePosition.xyz - posw.xyz), 0); //ワールド座標の視線ベクトル
+	
 	
     outData.Neyev.x = dot(outData.eyev, tangent);
     outData.Neyev.y = dot(outData.eyev, binormal);
@@ -92,7 +94,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
    // normal = normalize(normal);
 	
 	
-    float4 light = lightPosition[0];
+    float4 light = pLightposition;
     light.w = 0;
     light = normalize(light);
 	
@@ -144,7 +146,7 @@ float4 PS(VS_OUT inData) : SV_Target
         else
         {
             diffuse = g_texture.Sample(g_sampler, inData.uv) * (NL + specular) * factor.x;
-			ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
+            ambient = g_texture.Sample(g_sampler, inData.uv) * ambientSource * factor.x;
 			
             //diffuse = NL + specular;
             //ambient = float4(0.3, 0.3, 0.3, 1.0);
